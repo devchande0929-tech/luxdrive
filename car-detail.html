@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuxDrive — Car Detail</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:#1a1a1a;
+  --darker:#111;
+  --gold:#c9a84c;
+  --gold2:#e0b85a;
+  --light:#f5f5f5;
+  --muted:#888;
+  --border:#333;
+  --white:#fafafa;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',sans-serif;background:#fff;color:var(--dark);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#111}
+::-webkit-scrollbar-thumb{background:var(--gold)}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:var(--darker);padding:1rem 5%;
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:2px solid var(--gold);
+}
+.logo{color:var(--gold);font-size:1.4rem;font-weight:700;letter-spacing:2px;cursor:pointer}
+.logo span{color:#fff}
+.btn-back{
+  background:transparent;color:#ccc;border:1px solid #444;
+  padding:.5rem 1.2rem;border-radius:4px;cursor:pointer;
+  font-family:'Poppins',sans-serif;font-size:.85rem;
+  display:flex;align-items:center;gap:.5rem;transition:all .2s;
+}
+.btn-back:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── BREADCRUMB ── */
+.breadcrumb{
+  background:var(--light);padding:.8rem 5%;
+  font-size:.8rem;color:var(--muted);
+  display:flex;gap:.5rem;align-items:center;
+}
+.breadcrumb a{color:var(--gold)}
+.breadcrumb a:hover{text-decoration:underline}
+
+/* ── MAIN LAYOUT ── */
+.detail-wrapper{max-width:1200px;margin:0 auto;padding:2.5rem 5%}
+
+/* ── GALLERY ── */
+.gallery-section{margin-bottom:3rem}
+.main-photo{
+  width:100%;height:480px;object-fit:cover;
+  border-radius:12px;cursor:pointer;
+  transition:opacity .2s;display:block;
+  background:#eee;
+}
+.main-photo:hover{opacity:.95}
+.thumb-strip{
+  display:flex;gap:1rem;margin-top:1rem;
+  overflow-x:auto;padding-bottom:.5rem;
+}
+.thumb-strip::-webkit-scrollbar{height:4px}
+.thumb-strip::-webkit-scrollbar-thumb{background:var(--gold)}
+.thumb{
+  width:140px;height:90px;object-fit:cover;
+  border-radius:8px;cursor:pointer;flex-shrink:0;
+  border:2px solid transparent;transition:all .2s;opacity:.75;
+}
+.thumb:hover{opacity:1;border-color:var(--gold)}
+.thumb.active{border-color:var(--gold);opacity:1}
+.thumb-label{
+  font-size:.7rem;color:var(--muted);
+  text-align:center;margin-top:.3rem;
+}
+.thumb-wrapper{display:flex;flex-direction:column;flex-shrink:0}
+
+/* ── CAR HEADER ── */
+.car-header{
+  display:flex;justify-content:space-between;
+  align-items:flex-start;margin-bottom:2rem;
+  flex-wrap:wrap;gap:1rem;
+}
+.car-title h1{font-size:2rem;font-weight:700;margin-bottom:.3rem}
+.car-title .subtitle{color:var(--muted);font-size:.95rem}
+.car-price-box{text-align:right}
+.big-price{font-size:2rem;font-weight:700;color:var(--gold)}
+.price-note{color:var(--muted);font-size:.8rem;margin-top:.2rem}
+.tag-badge{
+  display:inline-block;background:#fff3cd;color:#856404;
+  font-size:.75rem;font-weight:600;padding:.25rem .75rem;
+  border-radius:20px;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.5px;
+}
+
+/* ── QUICK STATS BAR ── */
+.quick-stats{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:1rem;background:var(--darker);border-radius:12px;
+  padding:1.5rem;margin-bottom:2.5rem;
+}
+.qstat{text-align:center}
+.qstat-val{font-size:1.2rem;font-weight:700;color:var(--gold)}
+.qstat-key{font-size:.75rem;color:#aaa;margin-top:.2rem}
+
+/* ── SPECS GRID ── */
+.specs-section{margin-bottom:2.5rem}
+.specs-section h2{
+  font-size:1.2rem;font-weight:700;margin-bottom:1.2rem;
+  padding-bottom:.6rem;border-bottom:2px solid var(--gold);
+  display:inline-block;
+}
+.specs-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:.8rem;
+}
+.spec-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.75rem 1rem;background:var(--light);border-radius:8px;
+  font-size:.88rem;
+}
+.spec-row .spec-key{color:var(--muted);font-weight:400}
+.spec-row .spec-val{font-weight:600;color:var(--dark)}
+
+/* ── FEATURES ── */
+.features-section{margin-bottom:2.5rem}
+.features-section h2{
+  font-size:1.2rem;font-weight:700;margin-bottom:1.2rem;
+  padding-bottom:.6rem;border-bottom:2px solid var(--gold);
+  display:inline-block;
+}
+.features-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:.8rem;
+}
+.feature-item{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.75rem 1rem;background:var(--light);border-radius:8px;
+  font-size:.85rem;font-weight:500;
+}
+.feature-icon{font-size:1.1rem}
+
+/* ── ENQUIRY STRIP ── */
+.enquiry-strip{
+  background:var(--darker);border-radius:12px;
+  padding:2rem;display:flex;
+  justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:1.5rem;margin-bottom:2.5rem;
+}
+.enquiry-strip h3{color:#fff;font-size:1.1rem;font-weight:600}
+.enquiry-strip p{color:#aaa;font-size:.85rem;margin-top:.3rem}
+.strip-btns{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-gold{
+  background:var(--gold);color:#111;padding:.75rem 1.8rem;
+  border:none;border-radius:6px;font-weight:600;
+  cursor:pointer;font-family:'Poppins',sans-serif;font-size:.9rem;
+  transition:background .2s;
+}
+.btn-gold:hover{background:var(--gold2)}
+.btn-white{
+  background:transparent;color:#fff;padding:.75rem 1.8rem;
+  border:1px solid #555;border-radius:6px;font-weight:500;
+  cursor:pointer;font-family:'Poppins',sans-serif;font-size:.9rem;
+  transition:all .2s;
+}
+.btn-white:hover{border-color:var(--gold);color:var(--gold)}
+
+/* ── MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:999;align-items:center;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal{background:#fff;border-radius:12px;padding:2rem;max-width:400px;width:90%;position:relative;animation:pop .2s ease}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal h3{font-size:1.2rem;font-weight:700;margin-bottom:.5rem}
+.modal p{color:var(--muted);font-size:.88rem;margin-bottom:1.5rem}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--muted)}
+.modal input,.modal select{
+  width:100%;padding:.7rem 1rem;border:1px solid #ddd;
+  border-radius:6px;margin-bottom:.8rem;
+  font-family:'Poppins',sans-serif;font-size:.88rem;
+}
+.modal input:focus,.modal select:focus{outline:none;border-color:var(--gold)}
+.modal .btn-gold{width:100%;margin-top:.3rem}
+.success-msg{display:none;text-align:center;padding:1rem;background:#d4edda;color:#155724;border-radius:6px;margin-top:1rem;font-weight:500}
+
+/* ── LIGHTBOX ── */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:998;align-items:center;justify-content:center}
+.lightbox.active{display:flex}
+.lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:8px}
+.lightbox-close{position:absolute;top:1.5rem;right:1.5rem;color:#fff;font-size:2rem;cursor:pointer;background:none;border:none;line-height:1}
+.lightbox-prev,.lightbox-next{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:rgba(255,255,255,0.1);border:none;color:#fff;
+  font-size:1.8rem;padding:.8rem 1rem;cursor:pointer;
+  border-radius:6px;transition:background .2s;
+}
+.lightbox-prev{left:1.5rem}
+.lightbox-next{right:1.5rem}
+.lightbox-prev:hover,.lightbox-next:hover{background:rgba(201,168,76,0.4)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .car-header{flex-direction:column}
+  .car-price-box{text-align:left}
+  .main-photo{height:260px}
+  .enquiry-strip{flex-direction:column}
+  .detail-wrapper{padding:1.5rem 4%}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="window.location.href='luxdrive.html'">LUX<span>DRIVE</span></div>
+  <button class="btn-back" onclick="goBack()">← Back to Collection</button>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="luxdrive.html">Home</a> › <a href="luxdrive.html#cars">Collection</a> › <span id="bc-name">Car Details</span>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="detail-wrapper">
+
+  <!-- GALLERY -->
+  <div class="gallery-section">
+    <!-- Main large photo -->
+    <img class="main-photo" id="main-photo" src="" alt="Car" onclick="openLightbox(currentThumb)">
+
+    <!-- Thumbnail strip — all angles -->
+    <div class="thumb-strip" id="thumb-strip">
+      <!-- Thumbnails injected by JS -->
+    </div>
+  </div>
+
+  <!-- CAR HEADER -->
+  <div class="car-header">
+    <div class="car-title">
+      <div class="tag-badge" id="detail-tag"></div>
+      <h1 id="detail-name"></h1>
+      <div class="subtitle" id="detail-sub"></div>
+    </div>
+    <div class="car-price-box">
+      <div class="big-price" id="detail-price"></div>
+      <div class="price-note">+ Taxes &amp; Registration | Negotiable</div>
+    </div>
+  </div>
+
+  <!-- QUICK STATS -->
+  <div class="quick-stats" id="quick-stats">
+    <!-- Injected by JS -->
+  </div>
+
+  <!-- FULL SPECS -->
+  <div class="specs-section">
+    <h2>Full Specifications</h2>
+    <div class="specs-grid" id="specs-grid">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="features-section">
+    <h2>Key Features</h2>
+    <div class="features-grid" id="features-grid">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+
+  <!-- ENQUIRY STRIP -->
+  <div class="enquiry-strip">
+    <div>
+      <h3>Interested in this car?</h3>
+      <p>Talk to our experts today — no pressure, just honest advice.</p>
+    </div>
+    <div class="strip-btns">
+      <button class="btn-gold" onclick="openEnquiryModal()">📞 Request Callback</button>
+      <button class="btn-white" onclick="openTestDriveModal()">🚗 Book Test Drive</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ENQUIRY MODAL -->
+<div class="modal-overlay" id="enquiry-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('enquiry-modal')">✕</button>
+    <h3>Request a Callback</h3>
+    <p id="eq-modal-sub">Leave your details and we'll call you back shortly.</p>
+    <input type="text"  placeholder="Your Name"     id="eq-name">
+    <input type="tel"   placeholder="Phone Number"  id="eq-phone">
+    <input type="email" placeholder="Email Address" id="eq-email">
+    <button class="btn-gold" onclick="submitEnquiry()">Send Request</button>
+    <div class="success-msg" id="eq-success">✅ We'll call you within 2 hours!</div>
+  </div>
+</div>
+
+<!-- TEST DRIVE MODAL -->
+<div class="modal-overlay" id="testdrive-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('testdrive-modal')">✕</button>
+    <h3>Book a Test Drive</h3>
+    <p id="td-modal-sub">Pick a date and we'll have it ready for you.</p>
+    <input type="text" placeholder="Your Name"    id="td-name">
+    <input type="tel"  placeholder="Phone Number" id="td-phone">
+    <input type="date" id="td-date">
+    <button class="btn-gold" onclick="submitTestDrive()">Confirm Booking</button>
+    <div class="success-msg" id="td-success">✅ Booked! We'll confirm within 24 hours.</div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-prev" onclick="changeLightbox(-1)">&#8249;</button>
+  <img id="lightbox-img" src="" alt="Car photo">
+  <button class="lightbox-next" onclick="changeLightbox(1)">&#8250;</button>
+</div>
+
+<script>
+
+  // ─────────────────────────────────────────────
+  // FULL CAR DATABASE
+  // Every car has:
+  //  - All the same fields as the listing cards
+  //  - A 'photos' array: multiple angles with labels
+  //  - A 'specs' object: detailed specification pairs
+  //  - A 'features' array: notable features with icons
+  // ─────────────────────────────────────────────
+
+  const cars = [
+    {
+      id: 0,
+      brand: 'Ferrari',
+      name: 'Ferrari Roma',
+      year: 2021,
+      type: 'Coupe',
+      km: '28,000',
+      fuel: 'Petrol',
+      price: '3,85,00,000',
+      tag: 'Certified',
+
+      // Multi-angle photos from Wikipedia Commons
+      photos: [
+        {
+          url: 'Roma.jpg',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/2021_Ferrari_Roma%2C_rear_8.6.21.jpg/1280px-2021_Ferrari_Roma%2C_rear_8.6.21.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/2020_Ferrari_Roma_side.jpg/1280px-2020_Ferrari_Roma_side.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Ferrari_Roma_interior.jpg/1280px-Ferrari_Roma_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '3.9L V8 Twin-Turbo',
+        'Power':          '620 bhp @ 5,750 rpm',
+        'Torque':         '760 Nm @ 3,000 rpm',
+        '0–100 km/h':     '3.4 seconds',
+        'Top Speed':      '320 km/h',
+        'Transmission':   '8-Speed DCT',
+        'Drive':          'Rear-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '28,000 km',
+        'Seating':        '2 Persons',
+        'Colour':         'Rosso Corsa (Red)',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Dec 2025',
+        'Service History':'Full Ferrari Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'Manettino Drive Modes' },
+        { icon: '🔊', text: 'Ferrari Hi-Fi Sound System' },
+        { icon: '📷', text: '360° Parking Cameras' },
+        { icon: '❄️', text: 'Dual-Zone Climate Control' },
+        { icon: '🪑', text: 'Racing Bucket Seats' },
+        { icon: '📱', text: 'Apple CarPlay & Android Auto' },
+        { icon: '🛡️', text: 'Carbon Ceramic Brakes' },
+        { icon: '💡', text: 'Full LED Matrix Headlights' },
+        { icon: '🔒', text: 'Keyless Entry & Start' },
+        { icon: '🌡️', text: 'Heated & Ventilated Seats' },
+      ],
+    },
+
+    {
+      id: 1,
+      brand: 'Porsche',
+      name: 'Porsche 911 Carrera',
+      year: 2020,
+      type: 'Coupe',
+      km: '35,000',
+      fuel: 'Petrol',
+      price: '1,92,00,000',
+      tag: 'Featured',
+
+      photos: [
+        {
+          url: 'porsche-911.avif',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/2020_Porsche_911_Carrera_4S_%28992%29%2C_rear_8.1.20.jpg/1280px-2020_Porsche_911_Carrera_4S_%28992%29%2C_rear_8.1.20.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/2019_Porsche_911_Carrera_4S_%28992%2C_Silver%29%2C_side.jpg/1280px-2019_Porsche_911_Carrera_4S_%28992%2C_Silver%29%2C_side.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Porsche_992_interior.jpg/1280px-Porsche_992_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '3.0L Flat-6 Twin-Turbo',
+        'Power':          '443 bhp @ 6,500 rpm',
+        'Torque':         '530 Nm @ 2,300 rpm',
+        '0–100 km/h':     '3.7 seconds',
+        'Top Speed':      '306 km/h',
+        'Transmission':   '8-Speed PDK',
+        'Drive':          'All-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '35,000 km',
+        'Seating':        '4 Persons',
+        'Colour':         'Carrara White Metallic',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Mar 2026',
+        'Service History':'Full Porsche Service',
+        'Warranty':       '2 Years LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'Porsche Active Suspension' },
+        { icon: '🔊', text: 'Bose Surround Sound' },
+        { icon: '📷', text: 'Surround View Cameras' },
+        { icon: '❄️', text: 'Dual-Zone Climate Control' },
+        { icon: '🪑', text: 'Sport Plus Seats' },
+        { icon: '📱', text: 'Apple CarPlay' },
+        { icon: '🛡️', text: 'PCCB Ceramic Brakes' },
+        { icon: '💡', text: 'PDLS+ Matrix LED' },
+        { icon: '🔒', text: 'Porsche Entry & Drive' },
+        { icon: '🌡️', text: 'Heated Front Seats' },
+      ],
+    },
+
+    {
+      id: 2,
+      brand: 'BMW',
+      name: 'BMW M8 Competition',
+      year: 2022,
+      type: 'Coupe',
+      km: '22,000',
+      fuel: 'Petrol',
+      price: '2,10,00,000',
+      tag: 'New Arrival',
+
+      photos: [
+        {
+          url: 'm8.jpg',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/2020_BMW_M8_Competition_Coupe_in_Frozen_Dark_Blue%2C_rear_7.29.20.jpg/1280px-2020_BMW_M8_Competition_Coupe_in_Frozen_Dark_Blue%2C_rear_7.29.20.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/2020_BMW_M8_Competition_Coupe_in_Frozen_Dark_Blue%2C_side_7.29.20.jpg/1280px-2020_BMW_M8_Competition_Coupe_in_Frozen_Dark_Blue%2C_side_7.29.20.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d8/BMW_M8_Competition_interior.jpg/1280px-BMW_M8_Competition_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '4.4L V8 Twin-Turbo M',
+        'Power':          '600 bhp @ 6,000 rpm',
+        'Torque':         '750 Nm @ 1,800 rpm',
+        '0–100 km/h':     '3.3 seconds',
+        'Top Speed':      '305 km/h (limited)',
+        'Transmission':   '8-Speed M Steptronic',
+        'Drive':          'M xDrive AWD',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '22,000 km',
+        'Seating':        '4 Persons',
+        'Colour':         'Frozen Dark Blue',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Jun 2026',
+        'Service History':'Full BMW Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'M Drive Professional' },
+        { icon: '🔊', text: 'Harman Kardon Surround' },
+        { icon: '📷', text: 'Parking Assistant Plus' },
+        { icon: '❄️', text: '4-Zone Climate Control' },
+        { icon: '🪑', text: 'M Carbon Bucket Seats' },
+        { icon: '📱', text: 'Apple CarPlay & Android Auto' },
+        { icon: '🛡️', text: 'M Carbon Ceramic Brakes' },
+        { icon: '💡', text: 'Adaptive LED Headlights' },
+        { icon: '🔒', text: 'Comfort Access Keyless' },
+        { icon: '🌡️', text: 'Heated & Cooled Seats' },
+      ],
+    },
+
+    {
+      id: 3,
+      brand: 'Mercedes',
+      name: 'Mercedes-AMG GT',
+      year: 2021,
+      type: 'Coupe',
+      km: '19,500',
+      fuel: 'Petrol',
+      price: '2,45,00,000',
+      tag: 'Certified',
+
+      photos: [
+        {
+          url: 'mercedes-amg-gt.avif',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/2021_Mercedes-AMG_GT_Black_Series_%28C190%29%2C_rear_8.23.20.jpg/1280px-2021_Mercedes-AMG_GT_Black_Series_%28C190%29%2C_rear_8.23.20.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Mercedes_AMG_GT_C190_side.jpg/1280px-Mercedes_AMG_GT_C190_side.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Mercedes-AMG_GT_interior.jpg/1280px-Mercedes-AMG_GT_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '4.0L V8 Biturbo AMG',
+        'Power':          '585 bhp @ 6,000 rpm',
+        'Torque':         '700 Nm @ 2,000 rpm',
+        '0–100 km/h':     '3.6 seconds',
+        'Top Speed':      '318 km/h',
+        'Transmission':   '7-Speed AMG Speedshift',
+        'Drive':          'Rear-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '19,500 km',
+        'Seating':        '2 Persons',
+        'Colour':         'Obsidian Black Metallic',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Sep 2025',
+        'Service History':'Full AMG Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'AMG Dynamic Plus Package' },
+        { icon: '🔊', text: 'Burmester High-End Audio' },
+        { icon: '📷', text: '360° Camera System' },
+        { icon: '❄️', text: 'Dual-Zone Automatic Climate' },
+        { icon: '🪑', text: 'AMG Performance Seats' },
+        { icon: '📱', text: 'MBUX Infotainment System' },
+        { icon: '🛡️', text: 'AMG Carbon Brakes' },
+        { icon: '💡', text: 'Multibeam LED Headlights' },
+        { icon: '🔒', text: 'KEYLESS-GO' },
+        { icon: '🌡️', text: 'Heated Nappa Leather Seats' },
+      ],
+    },
+
+    {
+      id: 4,
+      brand: 'Lamborghini',
+      name: 'Lamborghini Urus',
+      year: 2022,
+      type: 'SUV',
+      km: '14,000',
+      fuel: 'Petrol',
+      price: '3,20,00,000',
+      tag: 'Hot Deal',
+
+      photos: [
+        {
+          url: 'Lamborghini_urus.jpg',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/2019_Lamborghini_Urus_rear.jpg/1280px-2019_Lamborghini_Urus_rear.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/2022_Lamborghini_Urus_%28facelift%2C_Pearl_White%29%2C_side_8.27.22.jpg/1280px-2022_Lamborghini_Urus_%28facelift%2C_Pearl_White%29%2C_side_8.27.22.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Lamborghini_Urus_interior.jpg/1280px-Lamborghini_Urus_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '4.0L V8 Twin-Turbo',
+        'Power':          '650 bhp @ 6,000 rpm',
+        'Torque':         '850 Nm @ 2,250 rpm',
+        '0–100 km/h':     '3.6 seconds',
+        'Top Speed':      '305 km/h',
+        'Transmission':   '8-Speed Automatic',
+        'Drive':          'All-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '14,000 km',
+        'Seating':        '5 Persons',
+        'Colour':         'Verde Mantis (Green)',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Jan 2026',
+        'Service History':'Full Lamborghini Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'Lamborghini Dinamica Modes' },
+        { icon: '🔊', text: 'Bang & Olufsen 3D Audio' },
+        { icon: '📷', text: 'Surround View Camera' },
+        { icon: '❄️', text: '4-Zone Climate Control' },
+        { icon: '🪑', text: 'Full Alcantara Sports Seats' },
+        { icon: '📱', text: 'Apple CarPlay & Android Auto' },
+        { icon: '🛡️', text: 'Carbon Ceramic Brake System' },
+        { icon: '💡', text: 'Full LED Matrix Lights' },
+        { icon: '🔒', text: 'Lamborghini Connect App' },
+        { icon: '🌡️', text: 'Heated & Ventilated Seats' },
+      ],
+    },
+
+    {
+      id: 5,
+      brand: 'Porsche',
+      name: 'Porsche Cayenne GTS',
+      year: 2021,
+      type: 'SUV',
+      km: '30,000',
+      fuel: 'Petrol',
+      price: '1,55,00,000',
+      tag: 'Certified',
+
+      photos: [
+        {
+          url: 'porsche_cayenne_gts.webp',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/2021_Porsche_Cayenne_GTS_Coupe_%28facelift%2C_E3%29%2C_rear_8.23.20.jpg/1280px-2021_Porsche_Cayenne_GTS_Coupe_%28facelift%2C_E3%29%2C_rear_8.23.20.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/2019_Porsche_Cayenne_Coupe_side.jpg/1280px-2019_Porsche_Cayenne_Coupe_side.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/Porsche_Cayenne_GTS_interior.jpg/1280px-Porsche_Cayenne_GTS_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '4.0L V8 Twin-Turbo',
+        'Power':          '460 bhp @ 6,000 rpm',
+        'Torque':         '620 Nm @ 1,960 rpm',
+        '0–100 km/h':     '4.5 seconds',
+        'Top Speed':      '270 km/h',
+        'Transmission':   '8-Speed Tiptronic S',
+        'Drive':          'All-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '30,000 km',
+        'Seating':        '5 Persons',
+        'Colour':         'Jet Black Metallic',
+        'Ownership':      '2nd Owner',
+        'Insurance':      'Valid till Nov 2025',
+        'Service History':'Full Porsche Service',
+        'Warranty':       '2 Years LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'Porsche Active Chassis Control' },
+        { icon: '🔊', text: 'BOSE Surround Sound' },
+        { icon: '📷', text: 'Surround View Cameras' },
+        { icon: '❄️', text: '4-Zone Climate Control' },
+        { icon: '🪑', text: 'GTS Sport Seats' },
+        { icon: '📱', text: 'Apple CarPlay & Android Auto' },
+        { icon: '🛡️', text: 'PSCB Surface-Coated Brakes' },
+        { icon: '💡', text: 'PDLS Matrix LED Headlights' },
+        { icon: '🔒', text: 'Porsche Entry & Drive' },
+        { icon: '🌡️', text: 'Heated & Ventilated Seats' },
+      ],
+    },
+
+    {
+      id: 6,
+      brand: 'BMW',
+      name: 'BMW X7 M50i',
+      year: 2022,
+      type: 'SUV',
+      km: '18,000',
+      fuel: 'Petrol',
+      price: '1,35,00,000',
+      tag: 'Featured',
+
+      photos: [
+        {
+          url: 'x7.avif',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/2019_BMW_X7_xDrive30d_M_Sport_in_Sophisto_Grey%2C_rear_8.28.19.jpg/1280px-2019_BMW_X7_xDrive30d_M_Sport_in_Sophisto_Grey%2C_rear_8.28.19.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/2019_BMW_X7_xDrive30d_M_Sport_in_Sophisto_Grey%2C_side_8.28.19.jpg/1280px-2019_BMW_X7_xDrive30d_M_Sport_in_Sophisto_Grey%2C_side_8.28.19.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/BMW_X7_interior.jpg/1280px-BMW_X7_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '4.4L V8 Twin-Turbo',
+        'Power':          '523 bhp @ 5,500 rpm',
+        'Torque':         '750 Nm @ 1,800 rpm',
+        '0–100 km/h':     '4.7 seconds',
+        'Top Speed':      '250 km/h (limited)',
+        'Transmission':   '8-Speed Steptronic',
+        'Drive':          'xDrive All-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '18,000 km',
+        'Seating':        '7 Persons',
+        'Colour':         'Sophisto Grey Metallic',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Apr 2026',
+        'Service History':'Full BMW Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'M Sport Suspension' },
+        { icon: '🔊', text: 'Harman Kardon Sound System' },
+        { icon: '📷', text: 'Parking Assistant Plus' },
+        { icon: '❄️', text: '4-Zone Automatic Climate' },
+        { icon: '🪑', text: '7-Seat Nappa Leather' },
+        { icon: '📱', text: 'Apple CarPlay & Android Auto' },
+        { icon: '🛡️', text: 'M Sport Brakes' },
+        { icon: '💡', text: 'Adaptive LED Headlights' },
+        { icon: '🔒', text: 'Comfort Access' },
+        { icon: '🌡️', text: 'Heated All Rows Seats' },
+      ],
+    },
+
+    {
+      id: 7,
+      brand: 'Mercedes',
+      name: 'Mercedes S-Class 500',
+      year: 2020,
+      type: 'Sedan',
+      km: '42,000',
+      fuel: 'Petrol',
+      price: '1,10,00,000',
+      tag: 'Best Value',
+
+      photos: [
+        {
+          url: 's_class.avif',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/2021_Mercedes-Benz_S500_4MATIC_%28W223%29%2C_rear_8.27.20.jpg/1280px-2021_Mercedes-Benz_S500_4MATIC_%28W223%29%2C_rear_8.27.20.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mercedes-Benz_W223_S-Class_side.jpg/1280px-Mercedes-Benz_W223_S-Class_side.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Mercedes-Benz_S-Class_W223_interior.jpg/1280px-Mercedes-Benz_S-Class_W223_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '3.0L Inline-6 Turbo + EQ Boost',
+        'Power':          '435 bhp @ 5,900 rpm',
+        'Torque':         '520 Nm @ 1,800 rpm',
+        '0–100 km/h':     '4.9 seconds',
+        'Top Speed':      '250 km/h (limited)',
+        'Transmission':   '9-Speed 9G-Tronic',
+        'Drive':          '4MATIC All-Wheel Drive',
+        'Fuel Type':      'Petrol (Mild Hybrid)',
+        'Mileage':        '42,000 km',
+        'Seating':        '5 Persons',
+        'Colour':         'Iridium Silver Metallic',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Aug 2025',
+        'Service History':'Full Mercedes Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'E-Active Body Control' },
+        { icon: '🔊', text: 'Burmester 4D Surround Sound' },
+        { icon: '📷', text: '360° Surround Camera' },
+        { icon: '❄️', text: '4-Zone Climate Control' },
+        { icon: '🪑', text: 'Nappa Leather Massage Seats' },
+        { icon: '📱', text: 'MBUX Hyperscreen' },
+        { icon: '🛡️', text: 'AMG Line Brakes' },
+        { icon: '💡', text: 'Digital Light Headlights' },
+        { icon: '🔒', text: 'KEYLESS-GO Comfort' },
+        { icon: '🌡️', text: 'Heated & Cooled All Seats' },
+      ],
+    },
+
+    // ── NEW CARS FROM COLLECTION PAGE ──
+
+    {
+      id: 8,
+      brand: 'Bentley',
+      name: 'Bentley Continental GT',
+      year: 2021,
+      type: 'Coupe',
+      km: '16,000',
+      fuel: 'Petrol',
+      price: '4,50,00,000',
+      tag: 'Rare Find',
+
+      photos: [
+        {
+          url: 'Bentley-Continental-GT.avif',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/2019_Bentley_Continental_GT_V8%2C_rear_8.27.19.jpg/1280px-2019_Bentley_Continental_GT_V8%2C_rear_8.27.19.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/2019_Bentley_Continental_GT_V8%2C_side_8.27.19.jpg/1280px-2019_Bentley_Continental_GT_V8%2C_side_8.27.19.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/2020_Bentley_Continental_GT_V8_interior.jpg/1280px-2020_Bentley_Continental_GT_V8_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '4.0L V8 Twin-Turbo',
+        'Power':          '550 bhp @ 6,000 rpm',
+        'Torque':         '770 Nm @ 1,960 rpm',
+        '0–100 km/h':     '4.0 seconds',
+        'Top Speed':      '318 km/h',
+        'Transmission':   '8-Speed Dual Clutch',
+        'Drive':          'All-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '16,000 km',
+        'Seating':        '4 Persons',
+        'Colour':         'Midnight Emerald',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Feb 2026',
+        'Service History':'Full Bentley Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'Bentley Dynamic Ride' },
+        { icon: '🔊', text: 'Naim for Bentley Audio' },
+        { icon: '📷', text: '360° Around View Camera' },
+        { icon: '❄️', text: '4-Zone Climate Control' },
+        { icon: '🪑', text: 'Diamond Quilted Leather' },
+        { icon: '📱', text: 'Apple CarPlay & Android Auto' },
+        { icon: '🛡️', text: 'Carbon Ceramic Brakes' },
+        { icon: '💡', text: 'Matrix LED Headlights' },
+        { icon: '🔒', text: 'Keyless Entry & Start' },
+        { icon: '🌡️', text: 'Heated & Massaging Seats' },
+      ],
+    },
+
+    {
+      id: 9,
+      brand: 'Aston Martin',
+      name: 'Aston Martin Vantage',
+      year: 2020,
+      type: 'Sports',
+      km: '21,000',
+      fuel: 'Petrol',
+      price: '2,95,00,000',
+      tag: 'Certified',
+
+      photos: [
+        {
+          url: 'aston_martin_vantage.avif',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/2019_Aston_Martin_Vantage%2C_rear_8.27.19.jpg/1280px-2019_Aston_Martin_Vantage%2C_rear_8.27.19.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/2019_Aston_Martin_Vantage%2C_side_8.27.19.jpg/1280px-2019_Aston_Martin_Vantage%2C_side_8.27.19.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Aston_Martin_Vantage_interior_2019.jpg/1280px-Aston_Martin_Vantage_interior_2019.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '4.0L V8 Twin-Turbo AMG',
+        'Power':          '510 bhp @ 6,000 rpm',
+        'Torque':         '685 Nm @ 2,000 rpm',
+        '0–100 km/h':     '3.6 seconds',
+        'Top Speed':      '314 km/h',
+        'Transmission':   '8-Speed ZF Automatic',
+        'Drive':          'Rear-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '21,000 km',
+        'Seating':        '2 Persons',
+        'Colour':         'Jet Black',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Oct 2025',
+        'Service History':'Full Aston Martin Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'Sport & Track Drive Modes' },
+        { icon: '🔊', text: 'Bang & Olufsen Sound' },
+        { icon: '📷', text: 'Rear Parking Camera' },
+        { icon: '❄️', text: 'Dual-Zone Climate Control' },
+        { icon: '🪑', text: 'Semi-Aniline Leather Seats' },
+        { icon: '📱', text: 'Apple CarPlay' },
+        { icon: '🛡️', text: 'Carbon Ceramic Brakes' },
+        { icon: '💡', text: 'Full LED Headlights' },
+        { icon: '🔒', text: 'Keyless Entry' },
+        { icon: '🌡️', text: 'Heated Front Seats' },
+      ],
+    },
+
+    {
+      id: 10,
+      brand: 'McLaren',
+      name: 'McLaren 720S',
+      year: 2020,
+      type: 'Sports',
+      km: '12,500',
+      fuel: 'Petrol',
+      price: '5,20,00,000',
+      tag: 'Rare Find',
+
+      photos: [
+        {
+          url: 'mclaren_720s.jpg',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/2019_McLaren_720S%2C_rear_8.27.19.jpg/1280px-2019_McLaren_720S%2C_rear_8.27.19.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/2017_McLaren_720S_side.jpg/1280px-2017_McLaren_720S_side.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/McLaren_720S_interior.jpg/1280px-McLaren_720S_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '4.0L V8 Twin-Turbo M840T',
+        'Power':          '720 PS @ 7,500 rpm',
+        'Torque':         '770 Nm @ 5,500 rpm',
+        '0–100 km/h':     '2.9 seconds',
+        'Top Speed':      '341 km/h',
+        'Transmission':   '7-Speed SSG Dual Clutch',
+        'Drive':          'Rear-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '12,500 km',
+        'Seating':        '2 Persons',
+        'Colour':         'McLaren Orange',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Aug 2025',
+        'Service History':'Full McLaren Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'Active Dynamics Panel' },
+        { icon: '🔊', text: 'Bowers & Wilkins Audio' },
+        { icon: '📷', text: 'Rear View Camera' },
+        { icon: '❄️', text: 'Dual-Zone Climate' },
+        { icon: '🪑', text: 'Carbon Fibre Race Seats' },
+        { icon: '📱', text: 'Apple CarPlay' },
+        { icon: '🛡️', text: 'Carbon Ceramic Brakes' },
+        { icon: '💡', text: 'LED Adaptive Headlights' },
+        { icon: '🔒', text: 'Keyless Entry & Start' },
+        { icon: '🌡️', text: 'Heated Seats' },
+      ],
+    },
+
+    {
+      id: 11,
+      brand: 'Jaguar',
+      name: 'Jaguar F-Type R',
+      year: 2021,
+      type: 'Convertible',
+      km: '24,000',
+      fuel: 'Petrol',
+      price: '1,45,00,000',
+      tag: 'Featured',
+
+      photos: [
+        {
+          url: 'jaguar_f_type_r.jpg',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/2021_Jaguar_F-Type_R%2C_rear_8.23.21.jpg/1280px-2021_Jaguar_F-Type_R%2C_rear_8.23.21.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/2021_Jaguar_F-Type_R%2C_side_8.23.21.jpg/1280px-2021_Jaguar_F-Type_R%2C_side_8.23.21.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Jaguar_F-Type_interior.jpg/1280px-Jaguar_F-Type_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '5.0L V8 Supercharged',
+        'Power':          '575 bhp @ 6,500 rpm',
+        'Torque':         '700 Nm @ 3,500 rpm',
+        '0–100 km/h':     '3.5 seconds',
+        'Top Speed':      '300 km/h',
+        'Transmission':   '8-Speed Quickshift',
+        'Drive':          'All-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '24,000 km',
+        'Seating':        '2 Persons',
+        'Colour':         'Caesium Blue',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Mar 2026',
+        'Service History':'Full Jaguar Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'Jaguar Drive Control' },
+        { icon: '🔊', text: 'Meridian Sound System' },
+        { icon: '📷', text: 'Rear Camera & Sensors' },
+        { icon: '❄️', text: 'Dual-Zone Climate Control' },
+        { icon: '🪑', text: 'Performance Leather Seats' },
+        { icon: '📱', text: 'Apple CarPlay & Android Auto' },
+        { icon: '🛡️', text: 'Brembo Brakes' },
+        { icon: '💡', text: 'Full LED Pixel Headlights' },
+        { icon: '🔒', text: 'Keyless Entry' },
+        { icon: '🌡️', text: 'Heated & Cooled Seats' },
+      ],
+    },
+
+    {
+      id: 12,
+      brand: 'Mercedes',
+      name: 'Mercedes GLE 63 AMG',
+      year: 2022,
+      type: 'SUV',
+      km: '11,000',
+      fuel: 'Petrol',
+      price: '2,30,00,000',
+      tag: 'New Arrival',
+
+      photos: [
+        {
+          url: 'mercedes_gle.jpg',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/2021_Mercedes-AMG_GLE_63_S_%28W167%29%2C_rear_8.23.21.jpg/1280px-2021_Mercedes-AMG_GLE_63_S_%28W167%29%2C_rear_8.23.21.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/2021_Mercedes-AMG_GLE_63_S_%28W167%29%2C_side_8.23.21.jpg/1280px-2021_Mercedes-AMG_GLE_63_S_%28W167%29%2C_side_8.23.21.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Mercedes-AMG_GLE_63_interior.jpg/1280px-Mercedes-AMG_GLE_63_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '4.0L V8 Biturbo AMG',
+        'Power':          '612 bhp @ 5,750 rpm',
+        'Torque':         '850 Nm @ 2,500 rpm',
+        '0–100 km/h':     '3.8 seconds',
+        'Top Speed':      '280 km/h',
+        'Transmission':   '9-Speed AMG Speedshift',
+        'Drive':          '4MATIC+ All-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '11,000 km',
+        'Seating':        '5 Persons',
+        'Colour':         'Obsidian Black',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Dec 2026',
+        'Service History':'Full AMG Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'AMG RIDE CONTROL+ Suspension' },
+        { icon: '🔊', text: 'Burmester Surround Sound' },
+        { icon: '📷', text: '360° Camera System' },
+        { icon: '❄️', text: '4-Zone Climate Control' },
+        { icon: '🪑', text: 'AMG Performance Seats' },
+        { icon: '📱', text: 'MBUX Infotainment' },
+        { icon: '🛡️', text: 'AMG High-Performance Brakes' },
+        { icon: '💡', text: 'Multibeam LED Headlights' },
+        { icon: '🔒', text: 'KEYLESS-GO' },
+        { icon: '🌡️', text: 'Heated & Ventilated Seats' },
+      ],
+    },
+
+    {
+      id: 13,
+      brand: 'Porsche',
+      name: 'Porsche Panamera 4S',
+      year: 2021,
+      type: 'Sedan',
+      km: '27,000',
+      fuel: 'Petrol',
+      price: '1,78,00,000',
+      tag: 'Best Value',
+
+      photos: [
+        {
+          url: 'porsche_panamera.jpg',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/2021_Porsche_Panamera_4S_%28G2_II%29%2C_rear_8.23.21.jpg/1280px-2021_Porsche_Panamera_4S_%28G2_II%29%2C_rear_8.23.21.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/2021_Porsche_Panamera_4S_%28G2_II%29%2C_side_8.23.21.jpg/1280px-2021_Porsche_Panamera_4S_%28G2_II%29%2C_side_8.23.21.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Porsche_Panamera_interior.jpg/1280px-Porsche_Panamera_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '2.9L V6 Twin-Turbo',
+        'Power':          '444 bhp @ 5,650 rpm',
+        'Torque':         '620 Nm @ 1,750 rpm',
+        '0–100 km/h':     '4.2 seconds',
+        'Top Speed':      '289 km/h',
+        'Transmission':   '8-Speed PDK',
+        'Drive':          'Porsche Traction Management AWD',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '27,000 km',
+        'Seating':        '4 Persons',
+        'Colour':         'Carrara White Metallic',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Jun 2026',
+        'Service History':'Full Porsche Service',
+        'Warranty':       '2 Years LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'Porsche Active Suspension' },
+        { icon: '🔊', text: 'Burmester 3D Surround Sound' },
+        { icon: '📷', text: 'Surround View Cameras' },
+        { icon: '❄️', text: '4-Zone Climate Control' },
+        { icon: '🪑', text: '4-Seat Individual Comfort' },
+        { icon: '📱', text: 'Apple CarPlay & Android Auto' },
+        { icon: '🛡️', text: 'PSCB Surface Brakes' },
+        { icon: '💡', text: 'PDLS Matrix LED' },
+        { icon: '🔒', text: 'Porsche Entry & Drive' },
+        { icon: '🌡️', text: 'Heated & Ventilated Seats' },
+      ],
+    },
+
+    {
+      id: 14,
+      brand: 'BMW',
+      name: 'BMW M5 Competition',
+      year: 2021,
+      type: 'Sedan',
+      km: '31,000',
+      fuel: 'Petrol',
+      price: '1,65,00,000',
+      tag: 'Certified',
+
+      photos: [
+        {
+          url: 'bmw_m5.jpg',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/2021_BMW_M5_Competition_%28F90%2C_facelift%29%2C_rear_8.23.21.jpg/1280px-2021_BMW_M5_Competition_%28F90%2C_facelift%29%2C_rear_8.23.21.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/2021_BMW_M5_Competition_%28F90%2C_facelift%29%2C_side_8.23.21.jpg/1280px-2021_BMW_M5_Competition_%28F90%2C_facelift%29%2C_side_8.23.21.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/BMW_M5_F90_interior.jpg/1280px-BMW_M5_F90_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '4.4L V8 Twin-Turbo M TwinPower',
+        'Power':          '625 bhp @ 6,000 rpm',
+        'Torque':         '750 Nm @ 1,800 rpm',
+        '0–100 km/h':     '3.3 seconds',
+        'Top Speed':      '305 km/h',
+        'Transmission':   '8-Speed M Steptronic',
+        'Drive':          'M xDrive All-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '31,000 km',
+        'Seating':        '5 Persons',
+        'Colour':         'Marina Bay Blue',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till Jul 2026',
+        'Service History':'Full BMW M Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'M Drive Professional' },
+        { icon: '🔊', text: 'Harman Kardon Surround' },
+        { icon: '📷', text: 'Parking Assistant Plus' },
+        { icon: '❄️', text: '4-Zone Climate Control' },
+        { icon: '🪑', text: 'M Carbon Bucket Seats' },
+        { icon: '📱', text: 'Apple CarPlay & Android Auto' },
+        { icon: '🛡️', text: 'M Carbon Ceramic Brakes' },
+        { icon: '💡', text: 'Adaptive LED Headlights' },
+        { icon: '🔒', text: 'Comfort Access Keyless' },
+        { icon: '🌡️', text: 'Heated & Cooled Front Seats' },
+      ],
+    },
+
+    {
+      id: 15,
+      brand: 'Ferrari',
+      name: 'Ferrari Portofino M',
+      year: 2021,
+      type: 'Convertible',
+      km: '9,800',
+      fuel: 'Petrol',
+      price: '4,20,00,000',
+      tag: 'Rare Find',
+
+      photos: [
+        {
+          url: 'Ferrari_Portofino.jpg',
+          label: 'Front'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/2021_Ferrari_Portofino_M%2C_rear_8.6.21.jpg/1280px-2021_Ferrari_Portofino_M%2C_rear_8.6.21.jpg',
+          label: 'Rear'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Ferrari_Portofino_side.jpg/1280px-Ferrari_Portofino_side.jpg',
+          label: 'Side'
+        },
+        {
+          url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Ferrari_Portofino_interior.jpg/1280px-Ferrari_Portofino_interior.jpg',
+          label: 'Interior'
+        },
+      ],
+
+      specs: {
+        'Engine':         '3.9L V8 Twin-Turbo',
+        'Power':          '620 bhp @ 7,500 rpm',
+        'Torque':         '760 Nm @ 3,000 rpm',
+        '0–100 km/h':     '3.45 seconds',
+        'Top Speed':      '320 km/h',
+        'Transmission':   '8-Speed F1 DCT',
+        'Drive':          'Rear-Wheel Drive',
+        'Fuel Type':      'Petrol',
+        'Mileage':        '9,800 km',
+        'Seating':        '2+2 Persons',
+        'Colour':         'Rosso Corsa (Red)',
+        'Ownership':      '1st Owner',
+        'Insurance':      'Valid till May 2026',
+        'Service History':'Full Ferrari Service',
+        'Warranty':       '1 Year LuxDrive',
+        'Registration':   'Maharashtra (MH)',
+      },
+
+      features: [
+        { icon: '🏎️', text: 'Manettino Drive Modes' },
+        { icon: '🔊', text: 'Ferrari Premium Audio' },
+        { icon: '📷', text: 'Rear View Camera' },
+        { icon: '❄️', text: 'Dual-Zone Climate Control' },
+        { icon: '🪑', text: 'Racing Leather Seats' },
+        { icon: '📱', text: 'Apple CarPlay' },
+        { icon: '🛡️', text: 'Carbon Ceramic Brakes' },
+        { icon: '💡', text: 'LED Matrix Headlights' },
+        { icon: '🔒', text: 'Keyless Entry & Start' },
+        { icon: '🌡️', text: 'Heated Front Seats' },
+      ],
+    },
+
+  ];
+
+
+  // ─────────────────────────────────────────────
+  // SMART BACK BUTTON
+  // Goes back to collection.html if that's where
+  // the user came from, otherwise goes to home.
+  // ─────────────────────────────────────────────
+
+  function goBack() {
+    if (document.referrer.includes('collection.html')) {
+      window.location.href = 'collection.html';
+    } else {
+      window.history.back();
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // PAGE INIT
+  // Read the car ID from the URL query string
+  // (e.g. car-detail.html?id=2), find that car
+  // in the array, and populate the entire page.
+  // ─────────────────────────────────────────────
+
+  let currentCar   = null;
+  let currentThumb = 0; // index of the currently shown photo
+
+  function init() {
+
+    // Try URL query string first, fall back to localStorage
+    const params = new URLSearchParams(window.location.search);
+    let rawId    = params.get('id');
+    if (!rawId || rawId === 'null') {
+      rawId = localStorage.getItem('luxdrive_selected_car');
+    }
+    const carId = parseInt(rawId);
+
+    // Find the matching car object
+    currentCar = cars.find(function(c) { return c.id === carId; });
+
+    // If the ID is invalid, go back to the listing
+    if (!currentCar) {
+      window.location.href = 'luxdrive.html';
+      return;
+    }
+
+    // Update the browser tab title
+    document.title = 'LuxDrive — ' + currentCar.name;
+
+    // Fill in breadcrumb
+    document.getElementById('bc-name').textContent = currentCar.name;
+
+    // Fill in car header
+    document.getElementById('detail-tag').textContent   = currentCar.tag;
+    document.getElementById('detail-name').textContent  = currentCar.name;
+    document.getElementById('detail-sub').textContent   = currentCar.year + ' · ' + currentCar.type + ' · ' + currentCar.km + ' km · ' + currentCar.fuel;
+    document.getElementById('detail-price').textContent = '₹' + currentCar.price;
+
+    // Build the photo gallery
+    buildGallery();
+
+    // Build the quick stats bar
+    buildQuickStats();
+
+    // Build full specification rows
+    buildSpecs();
+
+    // Build the feature chips
+    buildFeatures();
+
+    // Pre-fill modal subtitles with the car name
+    document.getElementById('eq-modal-sub').textContent = 'Interested in the ' + currentCar.name + '? We\'ll call you back.';
+    document.getElementById('td-modal-sub').textContent = 'Pick a date to test drive the ' + currentCar.name + '.';
+
+    // Set today as minimum date for test drive
+    document.getElementById('td-date').min = new Date().toISOString().split('T')[0];
+  }
+
+
+  // ─────────────────────────────────────────────
+  // BUILD GALLERY
+  // Sets the main photo to the first image, then
+  // creates a thumbnail strip below with all
+  // available angles. Clicking a thumb swaps
+  // the main photo.
+  // ─────────────────────────────────────────────
+
+  function buildGallery() {
+
+    const photos   = currentCar.photos;
+    const mainEl   = document.getElementById('main-photo');
+    const stripEl  = document.getElementById('thumb-strip');
+
+    // Show the first photo in the big slot
+    mainEl.src = photos[0].url;
+    mainEl.alt = currentCar.name + ' — ' + photos[0].label;
+    currentThumb = 0;
+
+    // Build a thumb wrapper per photo
+    stripEl.innerHTML = photos.map(function(photo, index) {
+      return `
+        <div class="thumb-wrapper">
+          <img
+            class="thumb ${index === 0 ? 'active' : ''}"
+            src="${photo.url}"
+            alt="${currentCar.name} — ${photo.label}"
+            onclick="switchPhoto(${index})"
+            onerror="this.parentElement.style.display='none'"
+          >
+          <div class="thumb-label">${photo.label}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+
+  // ─────────────────────────────────────────────
+  // SWITCH PHOTO
+  // Called when user clicks a thumbnail.
+  // Updates the main image and highlights the
+  // active thumb.
+  // ─────────────────────────────────────────────
+
+  function switchPhoto(index) {
+
+    const photos  = currentCar.photos;
+    const mainEl  = document.getElementById('main-photo');
+    const thumbs  = document.querySelectorAll('.thumb');
+
+    // Swap main image
+    mainEl.src = photos[index].url;
+    mainEl.alt = currentCar.name + ' — ' + photos[index].label;
+    currentThumb = index;
+
+    // Update active highlight on thumbnails
+    thumbs.forEach(function(t, i) {
+      t.classList.toggle('active', i === index);
+    });
+  }
+
+
+  // ─────────────────────────────────────────────
+  // BUILD QUICK STATS
+  // Shows the 5 most important numbers in a dark
+  // bar right below the car header.
+  // ─────────────────────────────────────────────
+
+  function buildQuickStats() {
+
+    const s = currentCar.specs;
+
+    const stats = [
+      { val: s['Power']       || '—', key: 'Power'       },
+      { val: s['0–100 km/h']  || '—', key: '0–100 km/h'  },
+      { val: s['Top Speed']   || '—', key: 'Top Speed'   },
+      { val: currentCar.km + ' km',   key: 'Odometer'    },
+      { val: s['Transmission']|| '—', key: 'Gearbox'     },
+      { val: s['Drive']       || '—', key: 'Drive'       },
+    ];
+
+    document.getElementById('quick-stats').innerHTML = stats.map(function(stat) {
+      return `
+        <div class="qstat">
+          <div class="qstat-val">${stat.val}</div>
+          <div class="qstat-key">${stat.key}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+
+  // ─────────────────────────────────────────────
+  // BUILD SPECS
+  // Loops through the car's specs object and
+  // creates a key-value row for each entry.
+  // ─────────────────────────────────────────────
+
+  function buildSpecs() {
+
+    const specsGrid = document.getElementById('specs-grid');
+
+    specsGrid.innerHTML = Object.entries(currentCar.specs).map(function(entry) {
+      const key = entry[0];
+      const val = entry[1];
+      return `
+        <div class="spec-row">
+          <span class="spec-key">${key}</span>
+          <span class="spec-val">${val}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+
+  // ─────────────────────────────────────────────
+  // BUILD FEATURES
+  // Creates a chip/pill for each feature with
+  // its emoji icon and text label.
+  // ─────────────────────────────────────────────
+
+  function buildFeatures() {
+
+    const featuresGrid = document.getElementById('features-grid');
+
+    featuresGrid.innerHTML = currentCar.features.map(function(feature) {
+      return `
+        <div class="feature-item">
+          <span class="feature-icon">${feature.icon}</span>
+          <span>${feature.text}</span>
+        </div>
+      `;
+    }).join('');
+  }
+
+
+  // ─────────────────────────────────────────────
+  // LIGHTBOX
+  // Clicking the main photo opens a full-screen
+  // overlay. Arrow buttons let you cycle through
+  // all photos in the lightbox too.
+  // ─────────────────────────────────────────────
+
+  function openLightbox(index) {
+    document.getElementById('lightbox-img').src = currentCar.photos[index].url;
+    document.getElementById('lightbox').classList.add('active');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('active');
+  }
+
+  function changeLightbox(direction) {
+    const total = currentCar.photos.length;
+    currentThumb = (currentThumb + direction + total) % total;
+    document.getElementById('lightbox-img').src = currentCar.photos[currentThumb].url;
+    switchPhoto(currentThumb); // also keep thumbnail in sync
+  }
+
+  // Close lightbox by clicking outside the image
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+  });
+
+
+  // ─────────────────────────────────────────────
+  // MODALS — ENQUIRY & TEST DRIVE
+  // ─────────────────────────────────────────────
+
+  function openEnquiryModal() {
+    document.getElementById('eq-success').style.display = 'none';
+    document.getElementById('enquiry-modal').classList.add('active');
+  }
+
+  function openTestDriveModal() {
+    document.getElementById('td-success').style.display = 'none';
+    document.getElementById('testdrive-modal').classList.add('active');
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+
+  // Close modals by clicking the dark overlay
+  document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('active');
+    });
+  });
+
+  function submitEnquiry() {
+    const name  = document.getElementById('eq-name').value.trim();
+    const phone = document.getElementById('eq-phone').value.trim();
+    if (!name || !phone) { alert('Please enter your name and phone number.'); return; }
+    document.getElementById('eq-success').style.display = 'block';
+    setTimeout(function() { closeModal('enquiry-modal'); }, 2000);
+  }
+
+  function submitTestDrive() {
+    const name = document.getElementById('td-name').value.trim();
+    const phone= document.getElementById('td-phone').value.trim();
+    const date = document.getElementById('td-date').value;
+    if (!name || !phone || !date) { alert('Please fill in all fields.'); return; }
+    document.getElementById('td-success').style.display = 'block';
+    setTimeout(function() { closeModal('testdrive-modal'); }, 2000);
+  }
+
+
+  // ─────────────────────────────────────────────
+  // RUN
+  // ─────────────────────────────────────────────
+
+  init();
+
+</script>
+</body>
+</html>

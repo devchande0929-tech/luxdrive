@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuxDrive — Full Collection</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#c9a84c;--gold2:#e0b85a;--dark:#1a1a1a;--darker:#111;
+  --bg:#fff;--bg-soft:#f5f5f5;--bg-card:#fff;
+  --text-main:#1a1a1a;--text-muted:#888;
+  --border-col:#e0e0e0;--input-bg:#f9f9f9;--input-text:#1a1a1a;
+  --input-border:#ddd;--shadow:rgba(0,0,0,0.07);
+}
+body.dark-mode{
+  --bg:#121212;--bg-soft:#1a1a1a;--bg-card:#1e1e1e;
+  --text-main:#f0f0f0;--text-muted:#999;
+  --border-col:#2e2e2e;--input-bg:#2a2a2a;--input-text:#f0f0f0;
+  --input-border:#3a3a3a;--shadow:rgba(0,0,0,0.4);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text-main);transition:background .3s,color .3s}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--gold)}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:100;background:var(--darker);
+  padding:1rem 5%;display:flex;justify-content:space-between;
+  align-items:center;border-bottom:2px solid var(--gold);gap:1rem;
+}
+.logo{color:var(--gold);font-size:1.4rem;font-weight:700;letter-spacing:2px;cursor:pointer}
+.logo span{color:#fff}
+.nav-right{display:flex;gap:.8rem;align-items:center}
+.btn-back{background:transparent;color:#ccc;border:1px solid #444;padding:.45rem 1rem;border-radius:4px;cursor:pointer;font-family:'Poppins',sans-serif;font-size:.8rem;transition:all .2s}
+.btn-back:hover{border-color:var(--gold);color:var(--gold)}
+.toggle-theme{background:transparent;border:1px solid #444;color:#ccc;padding:.45rem .8rem;border-radius:20px;cursor:pointer;font-size:.82rem;font-family:'Poppins',sans-serif;transition:all .2s}
+.toggle-theme:hover{border-color:var(--gold);color:var(--gold)}
+.wishlist-nav-btn{background:transparent;border:1px solid #444;color:#ccc;padding:.45rem .9rem;border-radius:4px;cursor:pointer;font-family:'Poppins',sans-serif;font-size:.8rem;position:relative;transition:all .2s}
+.wishlist-nav-btn:hover{border-color:var(--gold);color:var(--gold)}
+.wl-badge{position:absolute;top:-6px;right:-6px;background:#e74c3c;color:#fff;width:18px;height:18px;border-radius:50%;font-size:.6rem;font-weight:700;display:none;align-items:center;justify-content:center}
+.wl-badge.show{display:flex}
+
+/* PAGE HEADER */
+.page-header{
+  background:linear-gradient(rgba(0,0,0,0.72),rgba(0,0,0,0.72)),
+    url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1600&q=80') center/cover;
+  padding:4rem 5%;text-align:center;
+}
+.page-header h1{color:#fff;font-size:2.4rem;font-weight:700;margin-bottom:.5rem}
+.page-header h1 span{color:var(--gold)}
+.page-header p{color:#ccc;font-size:.95rem}
+
+/* TOOLBAR */
+.toolbar{
+  background:var(--bg-soft);border-bottom:1px solid var(--border-col);
+  padding:1rem 5%;display:flex;align-items:center;
+  gap:1rem;flex-wrap:wrap;justify-content:space-between;
+  position:sticky;top:66px;z-index:50;
+}
+.toolbar-left{display:flex;gap:.7rem;flex-wrap:wrap;align-items:center}
+.filter-select{
+  padding:.5rem .9rem;border:1px solid var(--input-border);border-radius:6px;
+  font-family:'Poppins',sans-serif;font-size:.8rem;
+  background:var(--input-bg);color:var(--input-text);cursor:pointer;
+}
+.filter-select:focus{outline:none;border-color:var(--gold)}
+.search-box{
+  padding:.5rem .9rem;border:1px solid var(--input-border);border-radius:6px;
+  font-family:'Poppins',sans-serif;font-size:.8rem;
+  background:var(--input-bg);color:var(--input-text);width:200px;
+}
+.search-box:focus{outline:none;border-color:var(--gold)}
+.btn-reset{
+  background:var(--gold);color:#111;border:none;border-radius:6px;
+  padding:.5rem 1rem;font-size:.78rem;font-weight:600;cursor:pointer;
+  font-family:'Poppins',sans-serif;
+}
+.results-count{font-size:.8rem;color:var(--text-muted)}
+
+/* GRID */
+.collection-wrapper{padding:2.5rem 5%;max-width:1300px;margin:0 auto}
+.cars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.8rem}
+
+/* CAR CARD */
+.car-card-wrap{position:relative}
+.wishlist-btn{
+  position:absolute;top:.75rem;right:.75rem;
+  background:rgba(255,255,255,0.92);border:none;
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:1rem;z-index:2;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:all .2s;
+}
+.wishlist-btn:hover{transform:scale(1.15)}
+body.dark-mode .wishlist-btn{background:rgba(30,30,30,0.92)}
+.car-card{
+  background:var(--bg-card);border-radius:10px;overflow:hidden;
+  border:1px solid var(--border-col);transition:all .25s;
+  box-shadow:0 2px 12px var(--shadow);cursor:pointer;
+}
+.car-card:hover{transform:translateY(-5px);box-shadow:0 12px 32px var(--shadow);border-color:var(--gold)}
+.car-img{width:100%;height:210px;object-fit:cover;display:block;transition:transform .3s}
+.car-card:hover .car-img{transform:scale(1.04)}
+.car-img-fallback{
+  width:100%;height:210px;background:linear-gradient(135deg,#2a2a2a,#444);
+  display:none;align-items:center;justify-content:center;color:#aaa;font-size:.85rem;
+}
+.car-info{padding:1.2rem}
+.car-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.4rem}
+.car-badge{
+  display:inline-block;background:#fff3cd;color:#856404;
+  font-size:.68rem;font-weight:600;padding:.2rem .6rem;
+  border-radius:4px;text-transform:uppercase;letter-spacing:.5px;
+}
+.car-badge.new{background:#d4edda;color:#155724}
+.car-badge.hot{background:#f8d7da;color:#721c24}
+.car-badge.best{background:#d1ecf1;color:#0c5460}
+.car-badge.feat{background:#e2d9f3;color:#432874}
+.car-year{font-size:.75rem;color:var(--text-muted)}
+.car-name{font-size:1.05rem;font-weight:700;margin-bottom:.15rem;color:var(--text-main)}
+.car-sub{color:var(--text-muted);font-size:.8rem;margin-bottom:.7rem}
+.car-specs{display:flex;gap:1rem;font-size:.78rem;color:var(--text-muted);margin-bottom:.9rem;flex-wrap:wrap}
+.car-footer{display:flex;justify-content:space-between;align-items:center}
+.car-price{font-size:1.2rem;font-weight:700;color:var(--gold)}
+.car-price small{font-size:.68rem;color:var(--text-muted);font-weight:400;display:block}
+.btn-view{
+  background:var(--dark);color:#fff;padding:.45rem .9rem;
+  border:none;border-radius:5px;font-size:.78rem;font-weight:500;
+  cursor:pointer;font-family:'Poppins',sans-serif;transition:background .2s;
+}
+.btn-view:hover{background:var(--gold);color:#111}
+
+/* NO RESULTS */
+.no-results{
+  text-align:center;padding:4rem;color:var(--text-muted);
+  grid-column:1/-1;
+}
+.no-results div{font-size:2.5rem;margin-bottom:.8rem}
+
+/* WISHLIST DRAWER */
+.wishlist-drawer{
+  position:fixed;top:0;right:-420px;width:390px;height:100vh;
+  background:var(--bg-card);z-index:200;
+  box-shadow:-4px 0 24px rgba(0,0,0,0.2);transition:right .3s ease;
+  display:flex;flex-direction:column;border-left:1px solid var(--border-col);
+}
+.wishlist-drawer.open{right:0}
+.wd-head{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 1.5rem;border-bottom:1px solid var(--border-col);background:var(--darker)}
+.wd-head h3{color:var(--gold);font-size:1rem;font-weight:700}
+.wd-close{background:none;border:none;color:#aaa;font-size:1.3rem;cursor:pointer}
+.wd-body{flex:1;overflow-y:auto;padding:1rem}
+.wd-empty{text-align:center;padding:3rem 1rem;color:var(--text-muted)}
+.wd-item{display:flex;gap:.8rem;align-items:center;padding:.8rem;border:1px solid var(--border-col);border-radius:8px;margin-bottom:.7rem;background:var(--bg)}
+.wd-item img{width:70px;height:50px;object-fit:cover;border-radius:6px;flex-shrink:0}
+.wd-name{font-size:.82rem;font-weight:600;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wd-price{font-size:.78rem;color:var(--gold);font-weight:600;margin-top:.15rem}
+.wd-remove{background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1rem;flex-shrink:0}
+
+/* WHATSAPP FAB */
+.wa-fab{position:fixed;bottom:1.5rem;right:1.5rem;z-index:90;background:#25D366;color:#fff;border:none;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(37,211,102,0.4);font-size:1.5rem;transition:transform .2s}
+.wa-fab:hover{transform:scale(1.1)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .cars-grid{grid-template-columns:1fr 1fr}
+  nav{padding:1rem}
+  .page-header h1{font-size:1.6rem}
+  .search-box{width:140px}
+}
+@media(max-width:480px){
+  .cars-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" onclick="window.location.href='luxdrive.html'">LUX<span>DRIVE</span></div>
+  <div class="nav-right">
+    <button class="toggle-theme" id="theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
+    <button class="wishlist-nav-btn" onclick="toggleWishlist()">
+      ❤️ Wishlist
+      <span class="wl-badge" id="wl-badge">0</span>
+    </button>
+    <button class="btn-back" onclick="window.location.href='luxdrive.html'">← Back to Home</button>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <h1>Our <span>Collection</span></h1>
+  <p>Hand-picked, certified pre-owned luxury cars — all inspected and ready to drive home</p>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="toolbar-left">
+    <input class="search-box" type="text" placeholder="🔍 Search cars..." oninput="applyFilters()">
+    <select class="filter-select" id="f-brand" onchange="applyFilters()">
+      <option value="">All Brands</option>
+      <option>Ferrari</option>
+      <option>Porsche</option>
+      <option>BMW</option>
+      <option>Mercedes</option>
+      <option>Lamborghini</option>
+      <option>Aston Martin</option>
+      <option>Bentley</option>
+      <option>McLaren</option>
+      <option>Jaguar</option>
+    </select>
+    <select class="filter-select" id="f-type" onchange="applyFilters()">
+      <option value="">All Types</option>
+      <option>Coupe</option>
+      <option>SUV</option>
+      <option>Sedan</option>
+      <option>Convertible</option>
+      <option>Sports</option>
+    </select>
+    <select class="filter-select" id="f-budget" onchange="applyFilters()">
+      <option value="">All Budgets</option>
+      <option value="100">Under ₹1 Cr</option>
+      <option value="200">Under ₹2 Cr</option>
+      <option value="300">Under ₹3 Cr</option>
+      <option value="500">Under ₹5 Cr</option>
+    </select>
+    <select class="filter-select" id="f-sort" onchange="applyFilters()">
+      <option value="">Sort By</option>
+      <option value="price-asc">Price: Low to High</option>
+      <option value="price-desc">Price: High to Low</option>
+      <option value="km-asc">Mileage: Lowest First</option>
+      <option value="year-desc">Year: Newest First</option>
+    </select>
+    <button class="btn-reset" onclick="resetFilters()">Reset</button>
+  </div>
+  <div class="results-count" id="results-count">Showing 12 cars</div>
+</div>
+
+<!-- CAR GRID -->
+<div class="collection-wrapper">
+  <div class="cars-grid" id="cars-grid">
+    <!-- JS renders cards here -->
+  </div>
+</div>
+
+<!-- WISHLIST DRAWER -->
+<div class="wishlist-drawer" id="wishlist-drawer">
+  <div class="wd-head">
+    <h3>❤️ My Wishlist</h3>
+    <button class="wd-close" onclick="toggleWishlist()">✕</button>
+  </div>
+  <div class="wd-body" id="wd-body">
+    <div class="wd-empty">
+      <div style="font-size:2rem;margin-bottom:.5rem">💔</div>
+      <p>No cars saved yet.<br>Tap ♡ on any card to add.</p>
+    </div>
+  </div>
+</div>
+
+<!-- WHATSAPP FAB -->
+<button class="wa-fab" onclick="window.open('https://wa.me/917718067908?text=Hi!%20I%20want%20to%20enquire%20about%20a%20car.','_blank')" title="Chat on WhatsApp">💬</button>
+
+<script>
+
+  // ─────────────────────────────────────────────
+  // ALL 12+ CARS
+  // Full inventory for the collection page.
+  // Each car has: id, brand, name, year, type,
+  // km, fuel, priceVal (for sorting/filtering),
+  // price (display), tag, badge class, and img.
+  // ─────────────────────────────────────────────
+
+  const cars = [
+
+    {
+      id: 0, brand: 'Ferrari', name: 'Ferrari Roma', year: 2021, type: 'Coupe',
+      km: '28,000', fuel: 'Petrol', priceVal: 38500000, price: '3,85,00,000',
+      tag: 'Certified', badgeClass: '',
+      img: 'Roma.jpg'
+    },
+    {
+      id: 1, brand: 'Porsche', name: 'Porsche 911 Carrera', year: 2020, type: 'Coupe',
+      km: '35,000', fuel: 'Petrol', priceVal: 19200000, price: '1,92,00,000',
+      tag: 'Featured', badgeClass: 'feat',
+      img: 'porsche-911.avif'
+    },
+    {
+      id: 2, brand: 'BMW', name: 'BMW M8 Competition', year: 2022, type: 'Coupe',
+      km: '22,000', fuel: 'Petrol', priceVal: 21000000, price: '2,10,00,000',
+      tag: 'New Arrival', badgeClass: 'new',
+      img: 'm8.jpg'
+    },
+    {
+      id: 3, brand: 'Mercedes', name: 'Mercedes-AMG GT', year: 2021, type: 'Coupe',
+      km: '19,500', fuel: 'Petrol', priceVal: 24500000, price: '2,45,00,000',
+      tag: 'Certified', badgeClass: '',
+      img: 'mercedes-amg-gt.avif'
+    },
+    {
+      id: 4, brand: 'Lamborghini', name: 'Lamborghini Urus', year: 2022, type: 'SUV',
+      km: '14,000', fuel: 'Petrol', priceVal: 32000000, price: '3,20,00,000',
+      tag: 'Hot Deal', badgeClass: 'hot',
+      img: 'Lamborghini_urus.jpg'
+    },
+    {
+      id: 5, brand: 'Porsche', name: 'Porsche Cayenne GTS', year: 2021, type: 'SUV',
+      km: '30,000', fuel: 'Petrol', priceVal: 15500000, price: '1,55,00,000',
+      tag: 'Certified', badgeClass: '',
+      img: 'porsche_cayenne_gts.webp'
+    },
+    {
+      id: 6, brand: 'BMW', name: 'BMW X7 M50i', year: 2022, type: 'SUV',
+      km: '18,000', fuel: 'Petrol', priceVal: 13500000, price: '1,35,00,000',
+      tag: 'Featured', badgeClass: 'feat',
+      img: 'x7.avif'
+    },
+    {
+      id: 7, brand: 'Mercedes', name: 'Mercedes S-Class 500', year: 2020, type: 'Sedan',
+      km: '42,000', fuel: 'Petrol', priceVal: 11000000, price: '1,10,00,000',
+      tag: 'Best Value', badgeClass: 'best',
+      img: 's_class.avif'
+    },
+
+    // ── 4 NEW CARS ──
+
+    {
+      id: 8, brand: 'Bentley', name: 'Bentley Continental GT', year: 2021, type: 'Coupe',
+      km: '16,000', fuel: 'Petrol', priceVal: 45000000, price: '4,50,00,000',
+      tag: 'Rare Find', badgeClass: 'hot',
+      img: 'Bentley-Continental-GT.avif'
+    },
+    {
+      id: 9, brand: 'Aston Martin', name: 'Aston Martin Vantage', year: 2020, type: 'Sports',
+      km: '21,000', fuel: 'Petrol', priceVal: 29500000, price: '2,95,00,000',
+      tag: 'Certified', badgeClass: '',
+      img: 'aston_martin_vantage.avif'
+    },
+    {
+      id: 10, brand: 'McLaren', name: 'McLaren 720S', year: 2020, type: 'Sports',
+      km: '12,500', fuel: 'Petrol', priceVal: 52000000, price: '5,20,00,000',
+      tag: 'Rare Find', badgeClass: 'hot',
+      img: 'mclaren_720s.jpg'
+    },
+    {
+      id: 11, brand: 'Jaguar', name: 'Jaguar F-Type R', year: 2021, type: 'Convertible',
+      km: '24,000', fuel: 'Petrol', priceVal: 14500000, price: '1,45,00,000',
+      tag: 'Featured', badgeClass: 'feat',
+      img: 'jaguar_f_type_r.jpg'
+    },
+    {
+      id: 12, brand: 'Mercedes', name: 'Mercedes GLE 63 AMG', year: 2022, type: 'SUV',
+      km: '11,000', fuel: 'Petrol', priceVal: 23000000, price: '2,30,00,000',
+      tag: 'New Arrival', badgeClass: 'new',
+      img: 'mercedes_gle.jpg'
+    },
+    {
+      id: 13, brand: 'Porsche', name: 'Porsche Panamera 4S', year: 2021, type: 'Sedan',
+      km: '27,000', fuel: 'Petrol', priceVal: 17800000, price: '1,78,00,000',
+      tag: 'Best Value', badgeClass: 'best',
+      img: 'porsche_panamera.jpg'
+    },
+    {
+      id: 14, brand: 'BMW', name: 'BMW M5 Competition', year: 2021, type: 'Sedan',
+      km: '31,000', fuel: 'Petrol', priceVal: 16500000, price: '1,65,00,000',
+      tag: 'Certified', badgeClass: '',
+      img: 'bmw_m5.jpg'
+    },
+    {
+      id: 15, brand: 'Ferrari', name: 'Ferrari Portofino M', year: 2021, type: 'Convertible',
+      km: '9,800', fuel: 'Petrol', priceVal: 42000000, price: '4,20,00,000',
+      tag: 'Rare Find', badgeClass: 'hot',
+      img: 'Ferrari_Portofino.jpg'
+    },
+  ];
+
+
+  // ─────────────────────────────────────────────
+  // RENDER CARS
+  // Builds and injects car cards into the grid.
+  // Updates the results count label.
+  // ─────────────────────────────────────────────
+
+  function renderCars(list) {
+
+    const grid = document.getElementById('cars-grid');
+    document.getElementById('results-count').textContent = 'Showing ' + list.length + ' car' + (list.length !== 1 ? 's' : '');
+
+    if (list.length === 0) {
+      grid.innerHTML = `
+        <div class="no-results">
+          <div>🔍</div>
+          <p>No cars match your filters.<br>Try changing or resetting your search.</p>
+        </div>`;
+      return;
+    }
+
+    const wishlist = getWishlist();
+
+    grid.innerHTML = list.map(function(car) {
+      const loved = wishlist.some(function(w) { return w.id === car.id; });
+
+      const detailPage = car.id >= 8 ? 'cardeatail2.html' : 'car-detail.html';
+
+      return `
+        <div class="car-card-wrap">
+          <button class="wishlist-btn ${loved ? 'loved' : ''}" onclick="event.stopPropagation(); toggleWishlistCar(${car.id})" title="Save to wishlist">
+            ${loved ? '❤️' : '🤍'}
+          </button>
+          <div class="car-card" onclick="openCar(${car.id}, '${detailPage}')">
+            <img
+              class="car-img"
+              src="${car.img}"
+              alt="${car.name}"
+              loading="lazy"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            >
+            <div class="car-img-fallback">🚗 Photo unavailable</div>
+            <div class="car-info">
+              <div class="car-top">
+                <span class="car-badge ${car.badgeClass}">${car.tag}</span>
+                <span class="car-year">${car.year}</span>
+              </div>
+              <div class="car-name">${car.name}</div>
+              <div class="car-sub">${car.brand} · ${car.type}</div>
+              <div class="car-specs">
+                <span>🛣️ ${car.km} km</span>
+                <span>⛽ ${car.fuel}</span>
+              </div>
+              <div class="car-footer">
+                <div class="car-price">₹${car.price}<small>Negotiable</small></div>
+                <button class="btn-view" onclick="event.stopPropagation(); openCar(${car.id}, '${detailPage}')">View Details</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+
+  // ─────────────────────────────────────────────
+  // APPLY FILTERS + SORT
+  // Reads all filter dropdowns and search box,
+  // narrows the car list, then sorts it.
+  // ─────────────────────────────────────────────
+
+  function applyFilters() {
+
+    const search = document.querySelector('.search-box').value.toLowerCase().trim();
+    const brand  = document.getElementById('f-brand').value;
+    const type   = document.getElementById('f-type').value;
+    const budget = document.getElementById('f-budget').value;
+    const sort   = document.getElementById('f-sort').value;
+
+    let list = cars;
+
+    // Search by name or brand
+    if (search) {
+      list = list.filter(function(c) {
+        return (c.name + ' ' + c.brand).toLowerCase().includes(search);
+      });
+    }
+
+    // Brand filter
+    if (brand) list = list.filter(function(c) { return c.brand === brand; });
+
+    // Type filter
+    if (type) list = list.filter(function(c) { return c.type === type; });
+
+    // Budget filter — dropdown value is in lakhs
+    if (budget) {
+      const cap = parseInt(budget) * 100000;
+      list = list.filter(function(c) { return c.priceVal <= cap; });
+    }
+
+    // Sort
+    if (sort === 'price-asc')  list = list.slice().sort(function(a,b){ return a.priceVal - b.priceVal; });
+    if (sort === 'price-desc') list = list.slice().sort(function(a,b){ return b.priceVal - a.priceVal; });
+    if (sort === 'km-asc')     list = list.slice().sort(function(a,b){ return parseInt(a.km.replace(/,/g,'')) - parseInt(b.km.replace(/,/g,'')); });
+    if (sort === 'year-desc')  list = list.slice().sort(function(a,b){ return b.year - a.year; });
+
+    renderCars(list);
+  }
+
+  function resetFilters() {
+    document.querySelector('.search-box').value = '';
+    ['f-brand','f-type','f-budget','f-sort'].forEach(function(id) {
+      document.getElementById(id).value = '';
+    });
+    renderCars(cars);
+  }
+
+
+  // ─────────────────────────────────────────────
+  // OPEN CAR DETAIL
+  // Saves the car ID to localStorage before
+  // navigating — this works even when URL query
+  // strings aren't supported by the environment.
+  // ─────────────────────────────────────────────
+
+  function openCar(carId, detailPage) {
+    localStorage.setItem('luxdrive_selected_car', carId);
+    window.location.href = detailPage + '?id=' + carId;
+  }
+
+
+  // ─────────────────────────────────────────────
+  // WISHLIST
+  // Shared localStorage key with luxdrive.html
+  // so the wishlist persists across both pages.
+  // ─────────────────────────────────────────────
+
+  function getWishlist() {
+    return JSON.parse(localStorage.getItem('luxdrive_wishlist') || '[]');
+  }
+
+  function saveWishlist(list) {
+    localStorage.setItem('luxdrive_wishlist', JSON.stringify(list));
+  }
+
+  function toggleWishlistCar(carId) {
+    let wishlist = getWishlist();
+    const car    = cars.find(function(c) { return c.id === carId; });
+    const exists = wishlist.some(function(w) { return w.id === carId; });
+    if (exists) {
+      wishlist = wishlist.filter(function(w) { return w.id !== carId; });
+    } else {
+      wishlist.push({ id: car.id, name: car.name, price: car.price, img: car.img });
+    }
+    saveWishlist(wishlist);
+    updateWishlistBadge();
+    renderWishlistDrawer();
+    applyFilters(); // re-render cards to update heart icons
+  }
+
+  function updateWishlistBadge() {
+    const count = getWishlist().length;
+    const badge = document.getElementById('wl-badge');
+    badge.textContent = count;
+    badge.classList.toggle('show', count > 0);
+  }
+
+  function toggleWishlist() {
+    document.getElementById('wishlist-drawer').classList.toggle('open');
+    renderWishlistDrawer();
+  }
+
+  function renderWishlistDrawer() {
+    const wishlist = getWishlist();
+    const body     = document.getElementById('wd-body');
+    if (wishlist.length === 0) {
+      body.innerHTML = `<div class="wd-empty"><div style="font-size:2rem;margin-bottom:.5rem">💔</div><p>No cars saved yet.</p></div>`;
+      return;
+    }
+    body.innerHTML = wishlist.map(function(item) {
+      return `
+        <div class="wd-item">
+          <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'">
+          <div style="flex:1;min-width:0">
+            <div class="wd-name">${item.name}</div>
+            <div class="wd-price">₹${item.price}</div>
+          </div>
+          <button class="wd-remove" onclick="toggleWishlistCar(${item.id})">✕</button>
+        </div>`;
+    }).join('');
+  }
+
+
+  // ─────────────────────────────────────────────
+  // DARK / LIGHT MODE
+  // Same logic as luxdrive.html — reads saved
+  // preference from localStorage on load.
+  // ─────────────────────────────────────────────
+
+  function toggleTheme() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    document.getElementById('theme-toggle').textContent = isDark ? '☀️ Light' : '🌙 Dark';
+    localStorage.setItem('luxdrive_theme', isDark ? 'dark' : 'light');
+  }
+
+  // Apply saved theme immediately on load
+  (function() {
+    if (localStorage.getItem('luxdrive_theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+      document.getElementById('theme-toggle').textContent = '☀️ Light';
+    }
+  })();
+
+
+  // ─────────────────────────────────────────────
+  // INITIALISATION
+  // Render all cars, load wishlist count.
+  // ─────────────────────────────────────────────
+
+  renderCars(cars);
+  updateWishlistBadge();
+
+</script>
+</body>
+</html>

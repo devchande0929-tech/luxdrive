@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuxDrive — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:#1a1a1a;
+  --darker:#111;
+  --gold:#c9a84c;
+  --gold2:#e0b85a;
+  --light:#f5f5f5;
+  --muted:#888;
+  --card:#222;
+  --border:#333;
+  --green:#27ae60;
+  --red:#e74c3c;
+  --blue:#2980b9;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Poppins',sans-serif;background:var(--light);color:var(--dark);min-height:100vh}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--gold)}
+
+/* ── LOGIN SCREEN ── */
+.login-screen{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;background:var(--darker);
+}
+.login-box{
+  background:#1a1a1a;border:1px solid var(--border);
+  border-radius:14px;padding:2.5rem;width:100%;max-width:380px;
+  text-align:center;
+}
+.login-logo{color:var(--gold);font-size:1.6rem;font-weight:700;letter-spacing:2px;margin-bottom:.3rem}
+.login-logo span{color:#fff}
+.login-sub{color:var(--muted);font-size:.82rem;margin-bottom:2rem}
+.login-box input{
+  width:100%;padding:.8rem 1rem;background:#2a2a2a;
+  border:1px solid var(--border);color:#fff;border-radius:8px;
+  font-family:'Poppins',sans-serif;font-size:.9rem;
+  margin-bottom:1rem;transition:border .2s;
+}
+.login-box input:focus{outline:none;border-color:var(--gold)}
+.login-box input::placeholder{color:#666}
+.btn-login{
+  width:100%;background:var(--gold);color:#111;
+  padding:.85rem;border:none;border-radius:8px;
+  font-weight:700;font-size:1rem;cursor:pointer;
+  font-family:'Poppins',sans-serif;transition:background .2s;
+}
+.btn-login:hover{background:var(--gold2)}
+.login-error{color:var(--red);font-size:.8rem;margin-top:.8rem;display:none}
+
+/* ── MAIN PANEL ── */
+.panel{display:none}
+
+/* NAV */
+.admin-nav{
+  background:var(--darker);padding:1rem 2rem;
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:2px solid var(--gold);position:sticky;top:0;z-index:10;
+}
+.admin-logo{color:var(--gold);font-size:1.2rem;font-weight:700;letter-spacing:2px}
+.admin-logo span{color:#fff}
+.admin-logo small{color:var(--muted);font-size:.65rem;font-weight:400;display:block;letter-spacing:1px}
+.nav-right{display:flex;gap:1rem;align-items:center}
+.btn-visit{
+  background:transparent;color:#ccc;border:1px solid #444;
+  padding:.45rem 1rem;border-radius:4px;cursor:pointer;
+  font-family:'Poppins',sans-serif;font-size:.78rem;transition:all .2s;
+}
+.btn-visit:hover{border-color:var(--gold);color:var(--gold)}
+.btn-logout{
+  background:var(--red);color:#fff;border:none;
+  padding:.45rem 1rem;border-radius:4px;cursor:pointer;
+  font-family:'Poppins',sans-serif;font-size:.78rem;
+}
+
+/* WRAPPER */
+.admin-wrapper{max-width:1200px;margin:0 auto;padding:2rem}
+
+/* SUMMARY CARDS */
+.summary-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:1.2rem;margin-bottom:2.5rem;
+}
+.summary-card{
+  background:#fff;border-radius:10px;padding:1.5rem;
+  border:1px solid #e0e0e0;box-shadow:0 2px 8px rgba(0,0,0,0.05);
+  display:flex;align-items:center;gap:1rem;
+}
+.summary-icon{
+  width:50px;height:50px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;flex-shrink:0;
+}
+.summary-icon.gold{background:#fff8e1}
+.summary-icon.green{background:#e8f5e9}
+.summary-icon.blue{background:#e3f2fd}
+.summary-icon.red{background:#fce4ec}
+.summary-val{font-size:1.8rem;font-weight:700;line-height:1}
+.summary-key{font-size:.78rem;color:var(--muted);margin-top:.2rem}
+
+/* TABS */
+.tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab-btn{
+  padding:.55rem 1.4rem;border:1px solid #ddd;border-radius:6px;
+  background:#fff;font-family:'Poppins',sans-serif;font-size:.85rem;
+  cursor:pointer;font-weight:500;transition:all .2s;color:var(--muted);
+}
+.tab-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:600}
+.tab-btn:hover:not(.active){border-color:var(--gold);color:var(--gold)}
+
+/* TABLE */
+.table-card{
+  background:#fff;border-radius:10px;
+  border:1px solid #e0e0e0;overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,0.05);
+}
+.table-header{
+  padding:1.2rem 1.5rem;border-bottom:1px solid #f0f0f0;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.table-header h3{font-size:1rem;font-weight:600}
+.table-actions{display:flex;gap:.7rem;align-items:center}
+.search-input{
+  padding:.45rem .9rem;border:1px solid #ddd;border-radius:6px;
+  font-family:'Poppins',sans-serif;font-size:.82rem;width:200px;
+}
+.search-input:focus{outline:none;border-color:var(--gold)}
+.btn-clear{
+  background:var(--red);color:#fff;border:none;
+  padding:.45rem 1rem;border-radius:6px;font-size:.78rem;
+  font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;
+}
+.btn-export{
+  background:var(--green);color:#fff;border:none;
+  padding:.45rem 1rem;border-radius:6px;font-size:.78rem;
+  font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;
+}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:600px}
+thead th{
+  background:#fafafa;padding:.85rem 1rem;
+  text-align:left;font-size:.75rem;font-weight:600;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.5px;
+  border-bottom:1px solid #f0f0f0;
+}
+tbody td{
+  padding:.85rem 1rem;font-size:.83rem;
+  border-bottom:1px solid #f9f9f9;vertical-align:top;
+}
+tbody tr:hover td{background:#fffbf0}
+tbody tr:last-child td{border-bottom:none}
+.badge{
+  display:inline-block;padding:.2rem .6rem;border-radius:20px;
+  font-size:.7rem;font-weight:600;
+}
+.badge-enquiry{background:#e3f2fd;color:#1565c0}
+.badge-quick{background:#f3e5f5;color:#6a1b9a}
+.badge-pending{background:#fff3e0;color:#e65100}
+.badge-confirmed{background:#e8f5e9;color:#2e7d32}
+.empty-state{
+  text-align:center;padding:3rem;color:var(--muted);
+}
+.empty-icon{font-size:2.5rem;margin-bottom:.8rem}
+.empty-state p{font-size:.9rem}
+
+/* NEW BADGE on summary card */
+.new-dot{
+  width:8px;height:8px;background:var(--red);border-radius:50%;
+  display:inline-block;margin-left:.4rem;animation:pulse 1.2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* TIMESTAMP */
+.ts{color:var(--muted);font-size:.75rem}
+.msg-text{
+  max-width:200px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;
+  cursor:pointer;
+}
+.msg-text:hover{white-space:normal;overflow:visible}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .admin-wrapper{padding:1rem}
+  .search-input{width:140px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ── -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">LUX<span>DRIVE</span></div>
+    <div class="login-sub">Admin Panel — Staff Only</div>
+    <input type="text"     placeholder="Username"  id="username" autocomplete="off">
+    <input type="password" placeholder="Password"  id="password" onkeydown="if(event.key==='Enter') doLogin()">
+    <button class="btn-login" onclick="doLogin()">Login</button>
+    <div class="login-error" id="login-error">❌ Incorrect username or password</div>
+  </div>
+</div>
+
+<!-- ── ADMIN PANEL ── -->
+<div class="panel" id="panel">
+
+  <!-- Nav -->
+  <nav class="admin-nav">
+    <div>
+      <div class="admin-logo">LUX<span>DRIVE</span></div>
+      <small class="admin-logo" style="font-size:.65rem;color:var(--muted);letter-spacing:1px;font-weight:400">Admin Panel</small>
+    </div>
+    <div class="nav-right">
+      <button class="btn-visit" onclick="window.open('luxdrive.html','_blank')">🌐 Visit Website</button>
+      <button class="btn-logout" onclick="doLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="admin-wrapper">
+
+    <!-- Summary Cards -->
+    <div class="summary-grid" id="summary-grid">
+      <!-- Injected by JS -->
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('enquiries', this)">📩 Enquiries</button>
+      <button class="tab-btn"        onclick="switchTab('testdrives', this)">🚗 Test Drive Bookings</button>
+    </div>
+
+    <!-- Enquiries Table -->
+    <div id="tab-enquiries">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>📩 All Enquiries</h3>
+          <div class="table-actions">
+            <input class="search-input" type="text" placeholder="Search..." oninput="searchTable('enquiries-table', this.value)">
+            <button class="btn-export" onclick="exportCSV('enquiries')">⬇ Export CSV</button>
+            <button class="btn-clear"  onclick="clearData('enquiries')">🗑 Clear All</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="enquiries-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Car Interested In</th>
+                <th>Message</th>
+                <th>Received At</th>
+              </tr>
+            </thead>
+            <tbody id="enquiries-body">
+              <!-- Injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Test Drives Table -->
+    <div id="tab-testdrives" style="display:none">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>🚗 Test Drive Bookings</h3>
+          <div class="table-actions">
+            <input class="search-input" type="text" placeholder="Search..." oninput="searchTable('testdrives-table', this.value)">
+            <button class="btn-export" onclick="exportCSV('testdrives')">⬇ Export CSV</button>
+            <button class="btn-clear"  onclick="clearData('testdrives')">🗑 Clear All</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="testdrives-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Car</th>
+                <th>Preferred Date</th>
+                <th>Status</th>
+                <th>Booked At</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="testdrives-body">
+              <!-- Injected by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+  // ─────────────────────────────────────────────
+  // LOGIN
+  // Simple hardcoded credentials for a college
+  // project. In a real system this would be
+  // server-side authentication.
+  // Username: admin | Password: luxdrive123
+  // ─────────────────────────────────────────────
+
+  const ADMIN_USER = 'admin';
+  const ADMIN_PASS = 'luxdrive123';
+
+  function doLogin() {
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if (username === ADMIN_USER && password === ADMIN_PASS) {
+      // Hide login screen, show the panel
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('panel').style.display = 'block';
+      loadAll(); // load all data once logged in
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+    }
+  }
+
+  function doLogout() {
+    document.getElementById('panel').style.display        = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('username').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('login-error').style.display  = 'none';
+  }
+
+
+  // ─────────────────────────────────────────────
+  // LOAD ALL DATA
+  // Reads from localStorage and renders both
+  // the summary cards and the two tables.
+  // ─────────────────────────────────────────────
+
+  function loadAll() {
+
+    const enquiries  = JSON.parse(localStorage.getItem('luxdrive_enquiries')  || '[]');
+    const testdrives = JSON.parse(localStorage.getItem('luxdrive_testdrives') || '[]');
+
+    renderSummary(enquiries, testdrives);
+    renderEnquiries(enquiries);
+    renderTestDrives(testdrives);
+  }
+
+
+  // ─────────────────────────────────────────────
+  // SUMMARY CARDS
+  // Shows total counts at a glance at the top.
+  // ─────────────────────────────────────────────
+
+  function renderSummary(enquiries, testdrives) {
+
+    const pending = testdrives.filter(function(b) { return b.status === 'Pending'; }).length;
+
+    // Today's date string to compare against booking timestamps
+    const today = new Date().toLocaleDateString('en-IN');
+    const todayEnq = enquiries.filter(function(e) {
+      return e.timestamp && e.timestamp.startsWith(today.split('/').reverse().join('/').slice(-8));
+    }).length;
+
+    document.getElementById('summary-grid').innerHTML = `
+      <div class="summary-card">
+        <div class="summary-icon gold">📩</div>
+        <div>
+          <div class="summary-val">${enquiries.length}</div>
+          <div class="summary-key">Total Enquiries</div>
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-icon green">🚗</div>
+        <div>
+          <div class="summary-val">${testdrives.length}</div>
+          <div class="summary-key">Test Drive Bookings</div>
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-icon red">⏳</div>
+        <div>
+          <div class="summary-val">${pending}</div>
+          <div class="summary-key">Pending Test Drives</div>
+        </div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-icon blue">📊</div>
+        <div>
+          <div class="summary-val">${enquiries.length + testdrives.length}</div>
+          <div class="summary-key">Total Leads</div>
+        </div>
+      </div>
+    `;
+  }
+
+
+  // ─────────────────────────────────────────────
+  // RENDER ENQUIRIES TABLE
+  // Displays all saved enquiries from localStorage
+  // in a readable table, newest first.
+  // ─────────────────────────────────────────────
+
+  function renderEnquiries(enquiries) {
+
+    const tbody = document.getElementById('enquiries-body');
+
+    if (enquiries.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8">
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <p>No enquiries yet. They'll appear here once customers submit the form.</p>
+            </div>
+          </td>
+        </tr>`;
+      return;
+    }
+
+    // Show newest enquiries at the top by reversing the array
+    const reversed = [...enquiries].reverse();
+
+    tbody.innerHTML = reversed.map(function(eq, index) {
+
+      const badgeClass = eq.type === 'Quick Enquiry' ? 'badge-quick' : 'badge-enquiry';
+
+      return `
+        <tr>
+          <td>${reversed.length - index}</td>
+          <td><span class="badge ${badgeClass}">${eq.type}</span></td>
+          <td><strong>${eq.name}</strong></td>
+          <td>${eq.phone}</td>
+          <td>${eq.email}</td>
+          <td>${eq.car}</td>
+          <td><div class="msg-text" title="${eq.message}">${eq.message}</div></td>
+          <td><span class="ts">${eq.timestamp}</span></td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+
+  // ─────────────────────────────────────────────
+  // RENDER TEST DRIVES TABLE
+  // Displays all test drive bookings with a
+  // status toggle so admin can mark them as
+  // Confirmed once they've called the customer.
+  // ─────────────────────────────────────────────
+
+  function renderTestDrives(testdrives) {
+
+    const tbody = document.getElementById('testdrives-body');
+
+    if (testdrives.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8">
+            <div class="empty-state">
+              <div class="empty-icon">🚗</div>
+              <p>No test drive bookings yet. They'll appear here once customers book.</p>
+            </div>
+          </td>
+        </tr>`;
+      return;
+    }
+
+    // Show newest bookings first
+    const reversed = [...testdrives].reverse();
+
+    tbody.innerHTML = reversed.map(function(td, index) {
+
+      // The real index in the original array (for status toggling)
+      const realIndex = testdrives.length - 1 - index;
+      const isPending = td.status === 'Pending';
+      const badgeClass = isPending ? 'badge-pending' : 'badge-confirmed';
+
+      return `
+        <tr>
+          <td>${reversed.length - index}</td>
+          <td><strong>${td.name}</strong></td>
+          <td>${td.phone}</td>
+          <td>${td.car}</td>
+          <td>${td.date}</td>
+          <td><span class="badge ${badgeClass}">${td.status}</span></td>
+          <td><span class="ts">${td.timestamp}</span></td>
+          <td>
+            ${isPending
+              ? `<button style="background:var(--green);color:#fff;border:none;padding:.3rem .8rem;border-radius:4px;font-size:.75rem;cursor:pointer;font-family:'Poppins',sans-serif" onclick="confirmBooking(${realIndex})">✓ Confirm</button>`
+              : `<span style="color:var(--green);font-size:.78rem;font-weight:600">✓ Done</span>`
+            }
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+
+  // ─────────────────────────────────────────────
+  // CONFIRM BOOKING
+  // Marks a test drive as Confirmed and saves
+  // the updated status back to localStorage.
+  // ─────────────────────────────────────────────
+
+  function confirmBooking(index) {
+
+    const testdrives = JSON.parse(localStorage.getItem('luxdrive_testdrives') || '[]');
+
+    // Update the status at the given index
+    testdrives[index].status = 'Confirmed';
+    localStorage.setItem('luxdrive_testdrives', JSON.stringify(testdrives));
+
+    // Re-render everything to reflect the change
+    loadAll();
+  }
+
+
+  // ─────────────────────────────────────────────
+  // SWITCH TABS
+  // Toggles between the Enquiries and
+  // Test Drives table views.
+  // ─────────────────────────────────────────────
+
+  function switchTab(tab, btn) {
+
+    // Update button styles
+    document.querySelectorAll('.tab-btn').forEach(function(b) {
+      b.classList.remove('active');
+    });
+    btn.classList.add('active');
+
+    // Show / hide the right table
+    document.getElementById('tab-enquiries').style.display  = tab === 'enquiries'  ? 'block' : 'none';
+    document.getElementById('tab-testdrives').style.display = tab === 'testdrives' ? 'block' : 'none';
+  }
+
+
+  // ─────────────────────────────────────────────
+  // SEARCH TABLE
+  // Filters table rows in real time based on
+  // the search text (case-insensitive match
+  // against the full row text).
+  // ─────────────────────────────────────────────
+
+  function searchTable(tableId, query) {
+
+    const rows = document.querySelectorAll('#' + tableId + ' tbody tr');
+    const q    = query.toLowerCase();
+
+    rows.forEach(function(row) {
+      const text = row.textContent.toLowerCase();
+      row.style.display = text.includes(q) ? '' : 'none';
+    });
+  }
+
+
+  // ─────────────────────────────────────────────
+  // EXPORT CSV
+  // Downloads all the data as a .csv file so
+  // you can open it in Excel or Google Sheets.
+  // ─────────────────────────────────────────────
+
+  function exportCSV(type) {
+
+    let rows, headers, filename;
+
+    if (type === 'enquiries') {
+
+      const data = JSON.parse(localStorage.getItem('luxdrive_enquiries') || '[]');
+      if (!data.length) { alert('No enquiries to export.'); return; }
+
+      headers  = ['#', 'Type', 'Name', 'Phone', 'Email', 'Car', 'Message', 'Received At'];
+      rows     = data.map(function(e, i) {
+        return [i+1, e.type, e.name, e.phone, e.email, e.car, '"' + e.message + '"', e.timestamp];
+      });
+      filename = 'luxdrive_enquiries.csv';
+
+    } else {
+
+      const data = JSON.parse(localStorage.getItem('luxdrive_testdrives') || '[]');
+      if (!data.length) { alert('No bookings to export.'); return; }
+
+      headers  = ['#', 'Name', 'Phone', 'Car', 'Date', 'Status', 'Booked At'];
+      rows     = data.map(function(t, i) {
+        return [i+1, t.name, t.phone, t.car, t.date, t.status, t.timestamp];
+      });
+      filename = 'luxdrive_testdrives.csv';
+    }
+
+    // Build CSV string
+    const csvContent = [headers, ...rows]
+      .map(function(row) { return row.join(','); })
+      .join('\n');
+
+    // Trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+
+  // ─────────────────────────────────────────────
+  // CLEAR DATA
+  // Removes all records of a given type from
+  // localStorage after a confirmation prompt.
+  // ─────────────────────────────────────────────
+
+  function clearData(type) {
+
+    const label = type === 'enquiries' ? 'enquiries' : 'test drive bookings';
+
+    if (!confirm('Are you sure you want to delete ALL ' + label + '? This cannot be undone.')) {
+      return;
+    }
+
+    const key = type === 'enquiries' ? 'luxdrive_enquiries' : 'luxdrive_testdrives';
+    localStorage.removeItem(key);
+    loadAll(); // refresh the display
+  }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LuxDrive — Pre-Owned Luxury Cars</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --dark:#1a1a1a;
+  --darker:#111;
+  --gold:#c9a84c;
+  --gold2:#e0b85a;
+  --light:#f5f5f5;
+  --muted:#888;
+  --card:#222;
+  --border:#333;
+  --white:#fafafa;
+
+  /* ── LIGHT MODE THEME TOKENS ── */
+  --bg:#ffffff;
+  --bg-soft:#f5f5f5;
+  --bg-card:#ffffff;
+  --text-main:#1a1a1a;
+  --text-sub:#555;
+  --text-muted:#888;
+  --border-col:#e0e0e0;
+  --input-bg:#f9f9f9;
+  --input-border:#ddd;
+  --input-text:#1a1a1a;
+  --section-alt:#f5f5f5;
+  --review-text:#444;
+  --spec-bg:#f5f5f5;
+  --compare-even:#f9f9f9;
+  --nav-link:#cccccc;
+  --footer-text:#888;
+  --footer-bottom:#555;
+  --modal-bg:#ffffff;
+  --shadow:rgba(0,0,0,0.08);
+}
+
+/* ── DARK MODE THEME TOKENS ── */
+body.dark-mode {
+  --bg:#121212;
+  --bg-soft:#1a1a1a;
+  --bg-card:#1e1e1e;
+  --text-main:#f0f0f0;
+  --text-sub:#cccccc;
+  --text-muted:#999;
+  --border-col:#2e2e2e;
+  --input-bg:#2a2a2a;
+  --input-border:#3a3a3a;
+  --input-text:#f0f0f0;
+  --section-alt:#181818;
+  --review-text:#ccc;
+  --spec-bg:#252525;
+  --compare-even:#1f1f1f;
+  --nav-link:#aaaaaa;
+  --footer-text:#777;
+  --footer-bottom:#555;
+  --modal-bg:#1e1e1e;
+  --shadow:rgba(0,0,0,0.4);
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:'Poppins',sans-serif;
+  background:var(--bg);
+  color:var(--text-main);
+  overflow-x:hidden;
+  transition:background .3s, color .3s;
+}
+a{text-decoration:none;color:inherit}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--gold)}
+
+/* NAV */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:var(--darker);padding:1rem 5%;
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:2px solid var(--gold);gap:1rem;
+}
+.logo{color:var(--gold);font-size:1.4rem;font-weight:700;letter-spacing:2px}
+.logo span{color:#fff}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--nav-link);font-size:.85rem;transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.btn-nav{background:var(--gold);color:#111;padding:.5rem 1.2rem;font-size:.8rem;font-weight:600;border:none;border-radius:4px;cursor:pointer;font-family:'Poppins',sans-serif}
+.btn-nav:hover{background:var(--gold2)}
+
+/* DARK MODE TOGGLE BUTTON */
+.toggle-theme{
+  background:transparent;border:1px solid #444;
+  color:#ccc;padding:.45rem .8rem;border-radius:20px;
+  cursor:pointer;font-size:.85rem;font-family:'Poppins',sans-serif;
+  transition:all .2s;white-space:nowrap;
+}
+.toggle-theme:hover{border-color:var(--gold);color:var(--gold)}
+
+/* SECTIONS */
+section{padding:5rem 5%}
+.section-title{text-align:center;margin-bottom:3rem}
+.section-title h2{font-size:2rem;font-weight:700}
+.section-title h2 span{color:var(--gold)}
+.section-title p{color:var(--text-muted);margin-top:.5rem;font-size:.95rem}
+
+/* STATS */
+.stats-section{background:var(--darker);padding:3.5rem 5%}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:2rem;text-align:center}
+.stat-num{font-size:2.4rem;font-weight:700;color:var(--gold)}
+.stat-label{color:#aaa;font-size:.85rem;margin-top:.3rem}
+
+/* BRANDS */
+.brands-section{background:var(--section-alt)}
+.brands-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem}
+.brand-badge{
+  background:var(--bg-card);border:1px solid var(--border-col);border-radius:10px;
+  padding:1.4rem 1.8rem;text-align:center;min-width:140px;
+  font-weight:600;font-size:.9rem;transition:all .25s;
+  box-shadow:0 2px 8px var(--shadow);cursor:default;
+  display:flex;flex-direction:column;align-items:center;gap:.6rem;
+}
+.brand-badge:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 8px 24px var(--shadow)}
+.brand-logo{width:80px;height:50px;object-fit:contain;transition:transform .2s}
+.brand-badge:hover .brand-logo{transform:scale(1.08)}
+.brand-name{font-size:.8rem;font-weight:600;color:var(--text-main)}
+
+/* FILTERS */
+.cars-section{background:var(--bg)}
+.filters-bar{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.5rem}
+.filter-select,.filter-btn{
+  padding:.55rem 1.2rem;border:1px solid var(--border-col);border-radius:6px;
+  font-family:'Poppins',sans-serif;font-size:.85rem;
+  background:var(--bg-card);color:var(--text-main);cursor:pointer;
+  transition:all .2s;
+}
+.filter-btn{background:var(--gold);color:#111;border-color:var(--gold);font-weight:600}
+.filter-btn:hover{background:var(--gold2)}
+
+/* CAR CARDS */
+.cars-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.8rem}
+.car-card{
+  background:var(--bg-card);border-radius:10px;overflow:hidden;
+  border:1px solid var(--border-col);transition:all .25s;
+  box-shadow:0 2px 12px var(--shadow);
+}
+.car-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px var(--shadow);border-color:var(--gold)}
+.car-img{width:100%;height:200px;object-fit:cover;display:block}
+.car-img-fallback{
+  width:100%;height:200px;background:linear-gradient(135deg,#2a2a2a,#444);
+  display:none;align-items:center;justify-content:center;
+  color:#aaa;font-size:.85rem;
+}
+.car-info{padding:1.2rem}
+.car-badge{
+  display:inline-block;background:#fff3cd;color:#856404;
+  font-size:.7rem;font-weight:600;padding:.2rem .6rem;
+  border-radius:4px;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.5px;
+}
+.car-name{font-size:1.1rem;font-weight:700;margin-bottom:.2rem;color:var(--text-main)}
+.car-sub{color:var(--text-muted);font-size:.82rem;margin-bottom:.8rem}
+.car-specs{display:flex;gap:1rem;font-size:.8rem;color:var(--text-muted);margin-bottom:1rem;flex-wrap:wrap}
+.car-footer{display:flex;justify-content:space-between;align-items:center}
+.car-price{font-size:1.25rem;font-weight:700;color:var(--gold)}
+.car-price small{font-size:.7rem;color:var(--text-muted);font-weight:400;display:block}
+.btn-enquire{background:var(--dark);color:#fff;padding:.5rem 1rem;border:none;border-radius:5px;font-size:.8rem;font-weight:500;cursor:pointer;font-family:'Poppins',sans-serif;transition:background .2s}
+.btn-enquire:hover{background:var(--gold);color:#111}
+.no-results{text-align:center;color:var(--text-muted);grid-column:1/-1;padding:2rem}
+
+/* COMPARE */
+.compare-section{background:var(--bg-soft)}
+.compare-wrapper{overflow-x:auto}
+.compare-table{width:100%;border-collapse:collapse;min-width:600px}
+.compare-table th{background:var(--darker);color:var(--gold);padding:1rem;text-align:left;font-size:.85rem;letter-spacing:1px;text-transform:uppercase}
+.compare-table td{padding:.9rem 1rem;border-bottom:1px solid var(--border-col);font-size:.88rem;color:var(--text-main);background:var(--bg-card)}
+.compare-table tr:nth-child(even) td{background:var(--compare-even)}
+.compare-table tr:hover td{background:#fff8e7}
+body.dark-mode .compare-table tr:hover td{background:#2a2500}
+.badge-best{background:#d4edda;color:#155724;padding:.15rem .5rem;border-radius:4px;font-size:.75rem;font-weight:600}
+
+/* EMI */
+.emi-section{background:var(--section-alt)}
+.emi-wrapper{
+  max-width:700px;margin:0 auto;
+  background:var(--bg-card);border-radius:12px;padding:2.5rem;
+  box-shadow:0 4px 20px var(--shadow);border:1px solid var(--border-col);
+}
+.emi-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.emi-field label{display:block;font-size:.8rem;font-weight:600;color:var(--text-muted);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.5px}
+.emi-field input,.emi-field select{
+  width:100%;padding:.7rem 1rem;border:1px solid var(--input-border);
+  border-radius:6px;font-family:'Poppins',sans-serif;font-size:.9rem;
+  background:var(--input-bg);color:var(--input-text);transition:border .2s;
+}
+.emi-field input:focus,.emi-field select:focus{outline:none;border-color:var(--gold)}
+.emi-result{background:var(--darker);color:#fff;border-radius:8px;padding:1.5rem;text-align:center;margin-top:1rem}
+.emi-result .label{font-size:.8rem;color:#aaa;margin-bottom:.3rem}
+.emi-amount{font-size:2.2rem;font-weight:700;color:var(--gold)}
+.emi-breakdown{display:flex;justify-content:space-around;margin-top:1rem;font-size:.8rem}
+.emi-breakdown .val{font-size:1rem;font-weight:600;color:#fff}
+.emi-breakdown .key{color:#888;margin-top:.2rem}
+
+/* TESTDRIVE */
+.testdrive-section{background:var(--bg)}
+.form-wrapper{
+  max-width:650px;margin:0 auto;background:var(--bg-card);border-radius:12px;padding:2.5rem;
+  border:1px solid var(--border-col);box-shadow:0 4px 20px var(--shadow);
+}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+.form-field{margin-bottom:.2rem}
+.form-field.full{grid-column:1/-1}
+.form-field label{display:block;font-size:.78rem;font-weight:600;color:var(--text-muted);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.5px}
+.form-field input,.form-field select,.form-field textarea{
+  width:100%;padding:.75rem 1rem;border:1px solid var(--input-border);
+  border-radius:6px;font-family:'Poppins',sans-serif;font-size:.88rem;
+  background:var(--input-bg);color:var(--input-text);transition:border .2s;
+}
+.form-field input:focus,.form-field select:focus,.form-field textarea:focus{outline:none;border-color:var(--gold)}
+.form-field textarea{resize:vertical;min-height:100px}
+.btn-submit,.btn-book{
+  margin-top:1.5rem;width:100%;padding:.9rem;font-size:1rem;font-weight:600;
+  border:none;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif;
+}
+.btn-book{background:var(--dark);color:#fff}
+.btn-book:hover{background:var(--gold);color:#111}
+.btn-submit{background:var(--gold);color:#111}
+.btn-submit:hover{background:var(--gold2)}
+.success-msg{display:none;text-align:center;padding:1rem;background:#d4edda;color:#155724;border-radius:6px;margin-top:1rem;font-weight:500}
+
+/* ENQUIRY */
+.enquiry-section{background:var(--darker)}
+.enquiry-section .section-title h2{color:#fff}
+.enquiry-section .section-title p{color:#888}
+.enquiry-wrapper{
+  max-width:650px;margin:0 auto;background:var(--card);border-radius:12px;
+  padding:2.5rem;border:1px solid var(--border);
+}
+.enquiry-wrapper .form-field label{color:#aaa}
+.enquiry-wrapper .form-field input,
+.enquiry-wrapper .form-field select,
+.enquiry-wrapper .form-field textarea{background:#2a2a2a;border-color:var(--border);color:#fff}
+.enquiry-wrapper .form-field input:focus,
+.enquiry-wrapper .form-field select:focus,
+.enquiry-wrapper .form-field textarea:focus{border-color:var(--gold);background:#333}
+.enquiry-wrapper .form-field select option{background:#2a2a2a}
+
+/* WHY */
+.why-section{background:var(--section-alt)}
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:2rem}
+.why-card{text-align:center;padding:2rem 1.5rem;border:1px solid var(--border-col);border-radius:10px;background:var(--bg-card);transition:all .2s}
+.why-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 8px 24px var(--shadow)}
+.why-icon{font-size:2.2rem;margin-bottom:1rem}
+.why-card h3{font-size:1rem;font-weight:600;margin-bottom:.5rem;color:var(--text-main)}
+.why-card p{font-size:.85rem;color:var(--text-muted);line-height:1.6}
+
+/* OUR STORY */
+.story-section{background:var(--bg);padding:5rem 5%}
+.story-text{max-width:800px;margin:0 auto}
+.story-text h2{font-size:2rem;font-weight:700;margin-bottom:1.2rem;line-height:1.3;text-align:center;color:var(--text-main)}
+.story-text h2 span{color:var(--gold)}
+.story-text .story-lead{font-size:1.05rem;color:var(--text-main);line-height:1.8;margin-bottom:1rem;font-weight:500;text-align:center}
+.story-text p{font-size:.92rem;color:var(--text-sub);line-height:1.9;margin-bottom:1rem}
+.story-values{display:flex;gap:1.5rem;flex-wrap:wrap;margin-top:2rem;justify-content:center}
+.story-val{display:flex;align-items:center;gap:.6rem;font-size:.88rem;font-weight:500;color:var(--text-main)}
+.story-val-icon{width:36px;height:36px;background:var(--gold);color:#111;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.story-timeline{margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border-col)}
+.story-timeline h3{font-size:1rem;font-weight:700;margin-bottom:1.2rem;color:var(--text-main)}
+.timeline{display:flex;flex-direction:column;gap:.8rem}
+.tl-item{display:flex;gap:1rem;align-items:flex-start}
+.tl-year{min-width:50px;font-size:.78rem;font-weight:700;color:var(--gold);padding-top:.15rem}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--gold);flex-shrink:0;margin-top:.3rem}
+.tl-text{font-size:.83rem;color:var(--text-muted);line-height:1.5}
+
+/* REVIEWS */
+.reviews-section{background:var(--section-alt);padding:5rem 5%}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.8rem;margin-bottom:3rem}
+.review-card{
+  background:var(--bg-card);border-radius:12px;padding:1.8rem;
+  border:1px solid var(--border-col);box-shadow:0 2px 12px var(--shadow);
+  transition:all .25s;display:flex;flex-direction:column;gap:1rem;
+}
+.review-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px var(--shadow);border-color:var(--gold)}
+.review-stars{color:var(--gold);font-size:1.1rem;letter-spacing:2px}
+.review-text{font-size:.88rem;color:var(--review-text);line-height:1.75;flex:1;font-style:italic}
+.review-footer{display:flex;align-items:center;gap:.9rem;margin-top:.5rem}
+.review-avatar{width:42px;height:42px;border-radius:50%;background:var(--gold);color:#111;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;flex-shrink:0}
+.review-name{font-weight:600;font-size:.88rem;color:var(--text-main)}
+.review-car{font-size:.75rem;color:var(--text-muted);margin-top:.15rem}
+.review-source{margin-left:auto;font-size:.75rem;font-weight:600;color:var(--gold);white-space:nowrap}
+.rating-summary{
+  max-width:600px;margin:0 auto;background:var(--bg-card);border-radius:12px;padding:2rem;
+  display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap;
+  box-shadow:0 2px 12px var(--shadow);border:1px solid var(--border-col);
+}
+.rating-big{font-size:3.5rem;font-weight:700;color:var(--gold);line-height:1}
+.rating-stars-big{color:var(--gold);font-size:1.2rem;letter-spacing:3px}
+.rating-count{font-size:.8rem;color:var(--text-muted);margin-top:.3rem}
+.rating-bars{flex:1;min-width:200px}
+.rbar-row{display:flex;align-items:center;gap:.7rem;font-size:.78rem;color:var(--text-muted);margin-bottom:.4rem}
+.rbar-row span:first-child{min-width:28px}
+.rbar-row span:last-child{min-width:28px;text-align:right}
+.rbar{flex:1;height:8px;background:var(--border-col);border-radius:4px;overflow:hidden}
+.rbar-fill{height:100%;background:var(--gold);border-radius:4px}
+
+/* FOOTER */
+footer{background:var(--darker);border-top:1px solid var(--border);padding:3rem 5% 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;margin-bottom:2.5rem}
+.footer-logo{color:var(--gold);font-size:1.2rem;font-weight:700;letter-spacing:2px;display:block;margin-bottom:.8rem}
+.footer-logo span{color:#fff}
+.footer-brand p{color:var(--footer-text);font-size:.85rem;line-height:1.7}
+.footer-col h4{color:var(--gold);font-size:.8rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:1rem}
+.footer-col ul{list-style:none}
+.footer-col ul li{margin-bottom:.5rem}
+.footer-col ul li a{color:var(--footer-text);font-size:.85rem;transition:color .2s}
+.footer-col ul li a:hover{color:var(--gold)}
+.footer-bottom{border-top:1px solid var(--border);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+.footer-bottom p{color:var(--footer-bottom);font-size:.8rem}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:999;align-items:center;justify-content:center}
+.modal-overlay.active{display:flex}
+.modal{background:var(--modal-bg);border-radius:12px;padding:2rem;max-width:400px;width:90%;position:relative;animation:pop .2s ease;border:1px solid var(--border-col)}
+@keyframes pop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal h3{font-size:1.2rem;font-weight:700;margin-bottom:.5rem;color:var(--text-main)}
+.modal p{color:var(--text-muted);font-size:.88rem;margin-bottom:1.5rem}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--text-muted)}
+.modal input{width:100%;padding:.7rem 1rem;border:1px solid var(--input-border);border-radius:6px;margin-bottom:.8rem;font-family:'Poppins',sans-serif;font-size:.88rem;background:var(--input-bg);color:var(--input-text)}
+.modal input:focus{outline:none;border-color:var(--gold)}
+.modal .btn-primary{width:100%;border:none;font-family:'Poppins',sans-serif;margin-top:.3rem}
+
+/* HOW IT WORKS */
+.hiw-section{background:var(--bg);padding:5rem 5%}
+.hiw-grid{display:flex;align-items:flex-start;justify-content:center;flex-wrap:wrap;gap:0;max-width:1100px;margin:0 auto}
+.hiw-card{flex:1;min-width:200px;max-width:240px;text-align:center;padding:2rem 1.2rem;background:var(--bg-card);border:1px solid var(--border-col);border-radius:12px;position:relative;transition:all .25s}
+.hiw-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 10px 28px var(--shadow)}
+.hiw-number{position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:var(--gold);color:#111;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700}
+.hiw-icon{font-size:2rem;margin-bottom:.8rem;margin-top:.5rem}
+.hiw-card h3{font-size:.95rem;font-weight:700;margin-bottom:.5rem;color:var(--text-main)}
+.hiw-card p{font-size:.8rem;color:var(--text-muted);line-height:1.6}
+.hiw-connector{font-size:1.8rem;color:var(--gold);padding:.5rem;align-self:center;flex-shrink:0}
+
+/* SHOWROOM GALLERY */
+.gallery-section{background:var(--section-alt);padding:5rem 5%}
+.gallery-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:220px 220px;gap:1rem;max-width:1100px;margin:0 auto}
+.gallery-item{position:relative;overflow:hidden;border-radius:10px;background:#2a2a2a;cursor:pointer}
+.gallery-item.tall{grid-row:1/3}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s;display:block}
+.gallery-item:hover img{transform:scale(1.06)}
+.gallery-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.7),transparent);display:flex;align-items:flex-end;padding:1rem;opacity:0;transition:opacity .3s}
+.gallery-item:hover .gallery-overlay{opacity:1}
+.gallery-overlay span{color:#fff;font-size:.82rem;font-weight:500}
+
+/* FAQ */
+.faq-section{background:var(--bg);padding:5rem 5%}
+.faq-list{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:.8rem}
+.faq-item{background:var(--bg-card);border:1px solid var(--border-col);border-radius:10px;overflow:hidden;transition:border-color .2s}
+.faq-item:hover{border-color:var(--gold)}
+.faq-question{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.4rem;cursor:pointer;font-weight:600;font-size:.9rem;color:var(--text-main);user-select:none;gap:1rem}
+.faq-arrow{color:var(--gold);font-size:.75rem;transition:transform .25s;flex-shrink:0}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-answer{display:none;padding:.9rem 1.4rem 1.2rem;font-size:.86rem;color:var(--text-muted);line-height:1.75;border-top:1px solid var(--border-col)}
+.faq-item.open .faq-answer{display:block}
+
+/* LOCATION */
+.location-section{background:var(--section-alt);padding:5rem 5%}
+.location-wrapper{display:grid;grid-template-columns:1fr 1.4fr;gap:2.5rem;max-width:1100px;margin:0 auto;align-items:start}
+.location-info{display:flex;flex-direction:column;gap:1rem}
+.loc-card{background:var(--bg-card);border:1px solid var(--border-col);border-radius:10px;padding:1rem 1.2rem;display:flex;gap:1rem;align-items:flex-start}
+.loc-icon{font-size:1.3rem;flex-shrink:0;margin-top:.1rem}
+.loc-label{font-size:.72rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.2rem}
+.loc-val{font-size:.85rem;color:var(--text-main);line-height:1.6}
+.btn-directions{display:block;text-align:center;background:var(--gold);color:#111;padding:.85rem;border-radius:8px;font-weight:600;font-size:.88rem;transition:background .2s;margin-top:.5rem}
+.btn-directions:hover{background:var(--gold2)}
+.location-map{height:460px;border-radius:12px;overflow:hidden;border:1px solid var(--border-col);box-shadow:0 4px 20px var(--shadow)}
+
+@media(max-width:768px){
+  .hiw-connector{display:none}
+  .hiw-grid{gap:2rem}
+  .hiw-card{max-width:100%}
+  .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  .gallery-item.tall{grid-row:auto}
+  .location-wrapper{grid-template-columns:1fr}
+  .location-map{height:280px}
+}
+
+/* ── WISHLIST HEART BUTTON on car cards ── */
+.car-card-wrap{position:relative}
+.wishlist-btn{
+  position:absolute;top:.7rem;right:.7rem;
+  background:rgba(255,255,255,0.9);border:none;
+  width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:1rem;z-index:2;
+  box-shadow:0 2px 8px rgba(0,0,0,0.15);transition:all .2s;
+}
+.wishlist-btn:hover{transform:scale(1.15)}
+.wishlist-btn.loved{background:#fff0f0}
+body.dark-mode .wishlist-btn{background:rgba(30,30,30,0.9)}
+
+/* ── WISHLIST DRAWER ── */
+.wishlist-fab{
+  position:fixed;bottom:6rem;right:1.5rem;z-index:90;
+  background:var(--gold);color:#111;border:none;
+  width:52px;height:52px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,0,0,0.25);transition:transform .2s;
+}
+.wishlist-fab:hover{transform:scale(1.1)}
+.wishlist-count{
+  position:absolute;top:-4px;right:-4px;
+  background:#e74c3c;color:#fff;
+  width:20px;height:20px;border-radius:50%;
+  font-size:.65rem;font-weight:700;
+  display:none;align-items:center;justify-content:center;
+}
+.wishlist-count.show{display:flex}
+
+.wishlist-drawer{
+  position:fixed;top:0;right:-400px;width:380px;height:100vh;
+  background:var(--bg-card);z-index:200;
+  box-shadow:-4px 0 24px rgba(0,0,0,0.2);
+  transition:right .3s ease;display:flex;flex-direction:column;
+  border-left:1px solid var(--border-col);
+}
+.wishlist-drawer.open{right:0}
+.wishlist-drawer-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:1.2rem 1.5rem;border-bottom:1px solid var(--border-col);
+  background:var(--darker);
+}
+.wishlist-drawer-head h3{color:var(--gold);font-size:1rem;font-weight:700}
+.wishlist-close-btn{background:none;border:none;color:#aaa;font-size:1.3rem;cursor:pointer}
+.wishlist-drawer-body{flex:1;overflow-y:auto;padding:1rem}
+.wishlist-empty{text-align:center;padding:3rem 1rem;color:var(--text-muted)}
+.wishlist-empty div{font-size:2.5rem;margin-bottom:.8rem}
+.wishlist-item{
+  display:flex;gap:.8rem;align-items:center;
+  padding:.8rem;border:1px solid var(--border-col);border-radius:8px;
+  margin-bottom:.7rem;background:var(--bg);
+}
+.wishlist-item img{width:70px;height:50px;object-fit:cover;border-radius:6px;flex-shrink:0}
+.wishlist-item-info{flex:1;min-width:0}
+.wishlist-item-name{font-size:.82rem;font-weight:600;color:var(--text-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wishlist-item-price{font-size:.78rem;color:var(--gold);font-weight:600;margin-top:.15rem}
+.wishlist-remove{background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1rem;flex-shrink:0}
+
+/* ── APPOINTMENT SCHEDULER ── */
+.appt-modal-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,0.8);z-index:999;
+  align-items:center;justify-content:center;
+}
+.appt-modal-overlay.active{display:flex}
+.appt-modal{
+  background:var(--bg-card);border-radius:14px;
+  padding:2rem;max-width:520px;width:92%;
+  position:relative;animation:pop .2s ease;
+  border:1px solid var(--border-col);max-height:90vh;overflow-y:auto;
+}
+.appt-modal h3{font-size:1.15rem;font-weight:700;color:var(--text-main);margin-bottom:.3rem}
+.appt-modal .appt-sub{font-size:.82rem;color:var(--text-muted);margin-bottom:1.5rem}
+.appt-close{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--text-muted)}
+
+/* Step indicator */
+.appt-steps{display:flex;gap:.5rem;margin-bottom:1.5rem}
+.appt-step{
+  flex:1;height:4px;border-radius:2px;background:var(--border-col);
+  transition:background .3s;
+}
+.appt-step.done{background:var(--gold)}
+
+/* Time slots */
+.time-slots{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:.8rem}
+.time-slot{
+  padding:.55rem;border:1px solid var(--border-col);border-radius:6px;
+  text-align:center;font-size:.78rem;font-weight:500;cursor:pointer;
+  color:var(--text-main);background:var(--bg);transition:all .2s;
+}
+.time-slot:hover{border-color:var(--gold);color:var(--gold)}
+.time-slot.selected{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
+.time-slot.unavailable{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+
+/* Visit type */
+.visit-types{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.8rem}
+.visit-type{
+  padding:1rem;border:1px solid var(--border-col);border-radius:8px;
+  text-align:center;cursor:pointer;transition:all .2s;background:var(--bg);
+}
+.visit-type:hover{border-color:var(--gold)}
+.visit-type.selected{border-color:var(--gold);background:#fff8e1}
+body.dark-mode .visit-type.selected{background:#2a2200}
+.visit-type-icon{font-size:1.5rem;margin-bottom:.4rem}
+.visit-type h4{font-size:.82rem;font-weight:600;color:var(--text-main)}
+.visit-type p{font-size:.72rem;color:var(--text-muted);margin-top:.2rem}
+
+.appt-nav{display:flex;justify-content:space-between;margin-top:1.5rem;gap:.8rem}
+.btn-appt-back{
+  background:transparent;color:var(--text-muted);border:1px solid var(--border-col);
+  padding:.65rem 1.4rem;border-radius:6px;cursor:pointer;
+  font-family:'Poppins',sans-serif;font-size:.85rem;transition:all .2s;
+}
+.btn-appt-back:hover{border-color:var(--gold);color:var(--gold)}
+.btn-appt-next{
+  background:var(--gold);color:#111;border:none;
+  padding:.65rem 1.8rem;border-radius:6px;cursor:pointer;
+  font-family:'Poppins',sans-serif;font-size:.85rem;font-weight:600;
+  transition:background .2s;flex:1;
+}
+.btn-appt-next:hover{background:var(--gold2)}
+.appt-confirm-box{
+  text-align:center;padding:1rem 0;
+}
+.appt-confirm-box .confirm-icon{font-size:3rem;margin-bottom:.8rem}
+.appt-confirm-box h4{font-size:1rem;font-weight:700;color:var(--text-main);margin-bottom:.5rem}
+.appt-confirm-box p{font-size:.82rem;color:var(--text-muted);line-height:1.6}
+.appt-summary{
+  background:var(--bg-soft);border-radius:8px;padding:1rem;
+  margin-top:1rem;font-size:.82rem;display:flex;flex-direction:column;gap:.4rem;
+}
+.appt-summary-row{display:flex;justify-content:space-between}
+.appt-summary-row span:first-child{color:var(--text-muted)}
+.appt-summary-row span:last-child{font-weight:600;color:var(--text-main)}
+.appt-step-panel{display:none}
+.appt-step-panel.active{display:block}
+.appt-field label{display:block;font-size:.75rem;font-weight:600;color:var(--text-muted);margin-bottom:.35rem;text-transform:uppercase;letter-spacing:.4px;margin-top:.8rem}
+.appt-field input,.appt-field select{
+  width:100%;padding:.7rem 1rem;border:1px solid var(--input-border);
+  border-radius:6px;font-family:'Poppins',sans-serif;font-size:.85rem;
+  background:var(--input-bg);color:var(--input-text);
+}
+.appt-field input:focus,.appt-field select:focus{outline:none;border-color:var(--gold)}
+.hero{
+  background:linear-gradient(rgba(0,0,0,0.65),rgba(0,0,0,0.65)),
+    url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1600&q=80') center/cover no-repeat;
+  height:90vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:2rem;
+}
+.hero h1{color:#fff;font-size:3rem;font-weight:700;line-height:1.2}
+.hero h1 span{color:var(--gold)}
+.hero p{color:#ccc;margin:1rem 0 2rem;font-size:1.05rem;font-weight:300;max-width:540px}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+.btn-primary{background:var(--gold);color:#111;padding:.75rem 2rem;font-weight:600;border:none;border-radius:4px;cursor:pointer;font-size:.95rem;font-family:'Poppins',sans-serif}
+.btn-primary:hover{background:var(--gold2)}
+.btn-outline{background:transparent;color:#fff;padding:.75rem 2rem;font-weight:500;border:2px solid #fff;border-radius:4px;cursor:pointer;font-size:.95rem;font-family:'Poppins',sans-serif;transition:all .2s}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="logo">LUX<span>DRIVE</span></div>
+  <ul class="nav-links">
+    <li><a href="#cars">Cars</a></li>
+    <li><a href="#brands">Brands</a></li>
+    <li><a href="#compare">Compare</a></li>
+    <li><a href="#emi">EMI</a></li>
+    <li><a href="#how-it-works">How It Works</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#story">Our Story</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#enquiry">Contact</a></li>
+  </ul>
+  <div style="display:flex;gap:.7rem;align-items:center">
+    <button class="toggle-theme" id="theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
+    <button class="btn-nav" onclick="scrollTo('enquiry')">Get in Touch</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <h1>Drive the <span>Extraordinary.</span><br>Own the Legend.</h1>
+  <p>Handpicked pre-owned luxury vehicles — certified, inspected, and priced fairly for the discerning driver.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="window.location.href='collection.html'">Browse Collection</button>
+    <button class="btn-outline" onclick="document.getElementById('testdrive').scrollIntoView({behavior:'smooth'})">Book a Test Drive</button>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="stats-grid">
+    <div><div class="stat-num">500+</div><div class="stat-label">Cars Sold</div></div>
+    <div><div class="stat-num">12+</div><div class="stat-label">Years Experience</div></div>
+    <div><div class="stat-num">98%</div><div class="stat-label">Customer Satisfaction</div></div>
+    <div><div class="stat-num">50+</div><div class="stat-label">Luxury Brands</div></div>
+  </div>
+</div>
+
+<!-- BRANDS -->
+<section class="brands-section" id="brands">
+  <div class="section-title">
+    <h2>Top <span>Brands</span></h2>
+    <p>We stock the world's most sought-after luxury marques</p>
+  </div>
+  <div class="brands-grid">
+
+    <!-- Ferrari — iconic prancing horse, red & yellow shield -->
+    <div class="brand-badge">
+      <img class="brand-logo"
+        src="https://upload.wikimedia.org/wikipedia/en/thumb/d/d1/Ferrari-Logo.svg/180px-Ferrari-Logo.svg.png"
+        alt="Ferrari"
+        onerror="this.style.display='none'">
+      <div class="brand-name">Ferrari</div>
+    </div>
+
+    <!-- Rolls-Royce — double-R badge in silver & black -->
+    <div class="brand-badge">
+      <img class="brand-logo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Rolls_Royce_Motor_Cars_logo.svg/200px-Rolls_Royce_Motor_Cars_logo.svg.png"
+        alt="Rolls-Royce"
+        onerror="this.style.display='none'">
+      <div class="brand-name">Rolls-Royce</div>
+    </div>
+
+    <!-- Bentley — winged B in silver & dark navy -->
+    <div class="brand-badge">
+      <img class="brand-logo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Bentley_logo.svg/200px-Bentley_logo.svg.png"
+        alt="Bentley"
+        onerror="this.style.display='none'">
+      <div class="brand-name">Bentley</div>
+    </div>
+
+    <!-- Lamborghini — gold bull on black shield -->
+    <div class="brand-badge">
+      <img class="brand-logo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Lamborghini_Logo.svg/200px-Lamborghini_Logo.svg.png"
+        alt="Lamborghini"
+        onerror="this.style.display='none'">
+      <div class="brand-name">Lamborghini</div>
+    </div>
+
+    <!-- BMW — iconic blue & white propeller roundel -->
+    <div class="brand-badge">
+      <img class="brand-logo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/180px-BMW.svg.png"
+        alt="BMW"
+        onerror="this.style.display='none'">
+      <div class="brand-name">BMW M</div>
+    </div>
+
+    <!-- Mercedes-Benz — three-pointed silver star -->
+    <div class="brand-badge">
+      <img class="brand-logo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Mercedes-Logo.svg/180px-Mercedes-Logo.svg.png"
+        alt="Mercedes-AMG"
+        onerror="this.style.display='none'">
+      <div class="brand-name">Mercedes-AMG</div>
+    </div>
+
+    <!-- Porsche — full colour Stuttgart crest -->
+    <div class="brand-badge">
+      <img class="brand-logo"
+        src="https://upload.wikimedia.org/wikipedia/de/thumb/7/70/Porsche_logo.svg/160px-Porsche_logo.svg.png"
+        alt="Porsche"
+        onerror="this.style.display='none'">
+      <div class="brand-name">Porsche</div>
+    </div>
+
+    <!-- Jaguar — leaping cat wordmark in dark -->
+    <div class="brand-badge">
+      <img class="brand-logo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jaguar_Cars_logo.svg/200px-Jaguar_Cars_logo.svg.png"
+        alt="Jaguar"
+        onerror="this.style.display='none'">
+      <div class="brand-name">Jaguar</div>
+    </div>
+
+    <!-- Aston Martin — green wings badge -->
+    <div class="brand-badge">
+      <img class="brand-logo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Aston_Martin_Lagonda_logo.svg/200px-Aston_Martin_Lagonda_logo.svg.png"
+        alt="Aston Martin"
+        onerror="this.style.display='none'">
+      <div class="brand-name">Aston Martin</div>
+    </div>
+
+    <!-- McLaren — orange speedmark on black -->
+    <div class="brand-badge">
+      <img class="brand-logo"
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/McLaren_Automotive_logo.svg/200px-McLaren_Automotive_logo.svg.png"
+        alt="McLaren"
+        onerror="this.style.display='none'">
+      <div class="brand-name">McLaren</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CARS -->
+<section class="cars-section" id="cars">
+  <div class="section-title">
+    <h2>Our <span>Collection</span></h2>
+    <p>Every car is inspected, certified, and ready to deliver</p>
+  </div>
+  <div class="filters-bar">
+    <select class="filter-select" id="filter-brand" onchange="filterCars()">
+      <option value="">All Brands</option>
+      <option>Ferrari</option><option>Porsche</option>
+      <option>BMW</option><option>Mercedes</option><option>Lamborghini</option>
+    </select>
+    <select class="filter-select" id="filter-type" onchange="filterCars()">
+      <option value="">All Types</option>
+      <option>Coupe</option><option>SUV</option><option>Sedan</option><option>Convertible</option>
+    </select>
+    <select class="filter-select" id="filter-budget" onchange="filterCars()">
+      <option value="">All Budgets</option>
+      <option value="100">Under ₹1 Cr</option>
+      <option value="200">Under ₹2 Cr</option>
+      <option value="400">Under ₹4 Cr</option>
+    </select>
+    <button class="filter-btn" onclick="resetFilters()">Reset</button>
+  </div>
+  <div class="cars-grid" id="cars-grid"></div>
+</section>
+
+<!-- COMPARE -->
+<section class="compare-section" id="compare">
+  <div class="section-title">
+    <h2>Compare <span>Models</span></h2>
+    <p>Side-by-side specs to help you decide</p>
+  </div>
+  <div class="compare-wrapper">
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th>Ferrari Roma</th>
+          <th>Porsche 911</th>
+          <th>BMW M8</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Year</td><td>2021</td><td>2020</td><td>2022</td></tr>
+        <tr><td>Engine</td><td>3.9L V8 Twin-Turbo</td><td>3.0L Flat-6 Turbo</td><td>4.4L V8 Twin-Turbo</td></tr>
+        <tr><td>Power</td><td>620 bhp <span class="badge-best">Best</span></td><td>443 bhp</td><td>600 bhp</td></tr>
+        <tr><td>0–100 km/h</td><td>3.4 sec</td><td>3.7 sec</td><td>3.3 sec <span class="badge-best">Fastest</span></td></tr>
+        <tr><td>Odometer</td><td>28,000 km</td><td>35,000 km</td><td>22,000 km <span class="badge-best">Lowest</span></td></tr>
+        <tr><td>Price</td><td>₹3.85 Cr</td><td>₹1.92 Cr <span class="badge-best">Best Value</span></td><td>₹2.10 Cr</td></tr>
+        <tr><td>Warranty</td><td>1 Year</td><td>2 Years <span class="badge-best">Best</span></td><td>1 Year</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- EMI -->
+<section class="emi-section" id="emi">
+  <div class="section-title">
+    <h2>EMI <span>Calculator</span></h2>
+    <p>Plan your purchase with our easy finance tool</p>
+  </div>
+  <div class="emi-wrapper">
+    <div class="emi-grid">
+      <div class="emi-field">
+        <label>Car Price (₹)</label>
+        <input type="number" id="car-price" value="5000000" oninput="calcEMI()">
+      </div>
+      <div class="emi-field">
+        <label>Down Payment (₹)</label>
+        <input type="number" id="down-pay" value="1000000" oninput="calcEMI()">
+      </div>
+      <div class="emi-field">
+        <label>Interest Rate (%)</label>
+        <input type="number" id="interest" value="9" step="0.1" oninput="calcEMI()">
+      </div>
+      <div class="emi-field">
+        <label>Loan Tenure</label>
+        <select id="tenure" onchange="calcEMI()">
+          <option value="12">1 Year</option>
+          <option value="24">2 Years</option>
+          <option value="36" selected>3 Years</option>
+          <option value="48">4 Years</option>
+          <option value="60">5 Years</option>
+          <option value="84">7 Years</option>
+        </select>
+      </div>
+    </div>
+    <div class="emi-result">
+      <div class="label">Monthly EMI</div>
+      <div class="emi-amount" id="emi-amount">₹1,27,030</div>
+      <div class="emi-breakdown">
+        <div><div class="val" id="loan-amt">₹40,00,000</div><div class="key">Loan Amount</div></div>
+        <div><div class="val" id="total-int">₹5,73,080</div><div class="key">Total Interest</div></div>
+        <div><div class="val" id="total-pay">₹45,73,080</div><div class="key">Total Payable</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEST DRIVE -->
+<section class="testdrive-section" id="testdrive">
+  <div class="section-title">
+    <h2>Book a <span>Test Drive</span></h2>
+    <p>Experience the thrill before you decide</p>
+  </div>
+  <div class="form-wrapper">
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Your Name</label>
+        <input type="text" placeholder="Rahul Sharma" id="td-name">
+      </div>
+      <div class="form-field">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="+91 98765 43210" id="td-phone">
+      </div>
+      <div class="form-field">
+        <label>Select Car</label>
+        <select id="td-car">
+          <option>Ferrari Roma 2021</option>
+          <option>Porsche 911 Carrera 2020</option>
+          <option>BMW M8 Competition 2022</option>
+          <option>Mercedes-AMG GT 2021</option>
+          <option>Lamborghini Urus 2022</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Preferred Date</label>
+        <input type="date" id="td-date">
+      </div>
+    </div>
+    <button class="btn-book" onclick="bookTestDrive()">Confirm Booking</button>
+    <div class="success-msg" id="td-success">✅ Test drive booked! We'll call you within 24 hours.</div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why-section">
+  <div class="section-title">
+    <h2>Why <span>LuxDrive?</span></h2>
+    <p>Your trust is our biggest asset</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-icon">🔍</div>
+      <h3>200-Point Inspection</h3>
+      <p>Every car goes through rigorous mechanical and cosmetic checks before listing.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">📄</div>
+      <h3>Clear Documentation</h3>
+      <p>Full history report, no hidden surprises. Clean RC, insurance & service records.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">🛡️</div>
+      <h3>1-Year Warranty</h3>
+      <p>All certified cars come with at least 1 year of comprehensive warranty.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-icon">💰</div>
+      <h3>Easy Finance</h3>
+      <p>Low interest rates, flexible tenures and quick loan approvals at our showroom.</p>
+    </div>
+  </div>
+</section>
+
+<!-- OUR STORY -->
+<section class="story-section" id="story">
+  <div class="section-title">
+    <h2>Our <span>Story</span></h2>
+    <p>A passion for cars that became a promise to our customers</p>
+  </div>
+  <div class="story-text">
+
+    <h2>From a Small Garage<br>to <span>Mumbai's Most Trusted</span><br>Luxury Car Dealer</h2>
+
+    <p class="story-lead">
+      LuxDrive started in 2012 with a simple idea — that buying a pre-owned luxury car should feel just as special as buying a brand new one.
+    </p>
+
+    <p>
+      Our founder, Arjun Mehta, grew up fixing cars in his father's garage in Bandra. His love for machines — especially the finely engineered ones — pushed him to start LuxDrive with just three cars, a rented space, and an unshakeable belief in honest dealing.
+    </p>
+
+    <p>
+      Over 12 years, we've grown from that tiny showroom into Mumbai's most recognised destination for certified pre-owned luxury vehicles. Every car we sell is one we'd proudly drive ourselves. That's not a slogan — it's the standard we hold every single day.
+    </p>
+
+    <p>
+      We don't just sell cars. We match people with machines that suit their life, their taste, and their budget — without pressure, without shortcuts, and without compromise.
+    </p>
+
+    <div class="story-values">
+      <div class="story-val"><div class="story-val-icon">🤝</div> Honest Dealings</div>
+      <div class="story-val"><div class="story-val-icon">🔍</div> Rigorous Checks</div>
+      <div class="story-val"><div class="story-val-icon">❤️</div> Passion for Cars</div>
+      <div class="story-val"><div class="story-val-icon">🏆</div> 500+ Happy Owners</div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="story-timeline">
+      <h3>Our Journey</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-year">2012</div>
+          <div class="tl-dot"></div>
+          <div class="tl-text">Founded in Bandra West with 3 cars and a dream</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2015</div>
+          <div class="tl-dot"></div>
+          <div class="tl-text">Crossed 100 cars sold — expanded to a proper showroom</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2018</div>
+          <div class="tl-dot"></div>
+          <div class="tl-text">Introduced our 200-point inspection & 1-year warranty program</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2021</div>
+          <div class="tl-dot"></div>
+          <div class="tl-text">Launched easy in-house financing — making luxury accessible</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2024</div>
+          <div class="tl-dot"></div>
+          <div class="tl-text">500+ cars sold. Mumbai's #1 rated pre-owned luxury dealer</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews-section" id="reviews">
+  <div class="section-title">
+    <h2>What Our <span>Customers Say</span></h2>
+    <p>Real stories from real owners — no filters, no fluff</p>
+  </div>
+
+  <div class="reviews-grid">
+
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"I was nervous about buying a pre-owned Ferrari, but Arjun and his team made the whole process completely transparent. Every document was in order, the car was immaculate, and the after-sales support has been brilliant. I'm a customer for life."</p>
+      <div class="review-footer">
+        <div class="review-avatar">R</div>
+        <div>
+          <div class="review-name">Rahul Singhania</div>
+          <div class="review-car">Bought: Ferrari Roma 2021</div>
+        </div>
+        <div class="review-source">Google ★ 5.0</div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Best car buying experience I've ever had. No pressure, no hidden charges. They even helped me with the loan paperwork. My Porsche 911 was delivered spotless with a full service kit. Highly recommend LuxDrive to anyone looking for a serious car."</p>
+      <div class="review-footer">
+        <div class="review-avatar">P</div>
+        <div>
+          <div class="review-name">Priya Malhotra</div>
+          <div class="review-car">Bought: Porsche 911 Carrera</div>
+        </div>
+        <div class="review-source">Google ★ 5.0</div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Got my BMW M8 from LuxDrive last year. The team was knowledgeable, patient, and never pushy. The 200-point inspection report they provided was incredibly detailed. One year later — zero issues. These guys really know their cars."</p>
+      <div class="review-footer">
+        <div class="review-avatar">K</div>
+        <div>
+          <div class="review-name">Karan Oberoi</div>
+          <div class="review-car">Bought: BMW M8 Competition</div>
+        </div>
+        <div class="review-source">Google ★ 5.0</div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"I've bought three cars from LuxDrive over the years — a Cayenne, an AMG GT, and now a Lamborghini Urus. Every single time, the experience has been flawless. Arjun treats every customer like family. This is how car buying should feel."</p>
+      <div class="review-footer">
+        <div class="review-avatar">S</div>
+        <div>
+          <div class="review-name">Sameer Kapoor</div>
+          <div class="review-car">Bought: Lamborghini Urus 2022</div>
+        </div>
+        <div class="review-source">Google ★ 5.0</div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">★★★★☆</div>
+      <p class="review-text">"Very professional team. The Mercedes S-Class I bought was exactly as described — clean history, single owner, great condition. Slight delay in paperwork but they kept me updated throughout. Would definitely come back for my next car."</p>
+      <div class="review-footer">
+        <div class="review-avatar">A</div>
+        <div>
+          <div class="review-name">Ananya Desai</div>
+          <div class="review-car">Bought: Mercedes S-Class 500</div>
+        </div>
+        <div class="review-source">Google ★ 4.0</div>
+      </div>
+    </div>
+
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"I was comparing three dealers in Mumbai. LuxDrive stood out immediately — their transparency, the quality of the cars, and the way they explain everything without jargon. Got my X7 at a fair price with 2 year warranty. Couldn't be happier."</p>
+      <div class="review-footer">
+        <div class="review-avatar">V</div>
+        <div>
+          <div class="review-name">Vikram Nair</div>
+          <div class="review-car">Bought: BMW X7 M50i</div>
+        </div>
+        <div class="review-source">Google ★ 5.0</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Overall rating bar -->
+  <div class="rating-summary">
+    <div class="rating-big">4.9</div>
+    <div class="rating-info">
+      <div class="rating-stars-big">★★★★★</div>
+      <div class="rating-count">Based on 340+ Google Reviews</div>
+    </div>
+    <div class="rating-bars">
+      <div class="rbar-row"><span>5 ★</span><div class="rbar"><div class="rbar-fill" style="width:88%"></div></div><span>88%</span></div>
+      <div class="rbar-row"><span>4 ★</span><div class="rbar"><div class="rbar-fill" style="width:9%"></div></div><span>9%</span></div>
+      <div class="rbar-row"><span>3 ★</span><div class="rbar"><div class="rbar-fill" style="width:2%"></div></div><span>2%</span></div>
+      <div class="rbar-row"><span>2 ★</span><div class="rbar"><div class="rbar-fill" style="width:1%"></div></div><span>1%</span></div>
+      <div class="rbar-row"><span>1 ★</span><div class="rbar"><div class="rbar-fill" style="width:0%"></div></div><span>0%</span></div>
+    </div>
+  </div>
+
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="hiw-section" id="how-it-works">
+  <div class="section-title">
+    <h2>How It <span>Works</span></h2>
+    <p>Buying your dream car with us takes just 4 easy steps</p>
+  </div>
+  <div class="hiw-grid">
+    <div class="hiw-card">
+      <div class="hiw-number">01</div>
+      <div class="hiw-icon">🔍</div>
+      <h3>Browse & Shortlist</h3>
+      <p>Explore our curated collection of certified luxury cars. Filter by brand, type, and budget to find your perfect match.</p>
+    </div>
+    <div class="hiw-connector">→</div>
+    <div class="hiw-card">
+      <div class="hiw-number">02</div>
+      <div class="hiw-icon">📞</div>
+      <h3>Talk to Our Team</h3>
+      <p>Call or WhatsApp us and our experts will walk you through the car's full history, inspection report, and pricing.</p>
+    </div>
+    <div class="hiw-connector">→</div>
+    <div class="hiw-card">
+      <div class="hiw-number">03</div>
+      <div class="hiw-icon">🚗</div>
+      <h3>Test Drive It</h3>
+      <p>Book a test drive at our Bandra showroom or request a home visit. No pressure — take your time behind the wheel.</p>
+    </div>
+    <div class="hiw-connector">→</div>
+    <div class="hiw-card">
+      <div class="hiw-number">04</div>
+      <div class="hiw-icon">🏁</div>
+      <h3>Drive It Home</h3>
+      <p>Finalise finance, complete paperwork, and we'll deliver your certified car to your doorstep — clean and ready to go.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="section-title">
+    <h2>Frequently Asked <span>Questions</span></h2>
+    <p>Everything you need to know before buying your car</p>
+  </div>
+  <div class="faq-list">
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <span>Are all cars certified and inspected?</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-answer">
+        Yes — every single car we sell goes through a rigorous 200-point inspection covering the engine, transmission, electricals, bodywork, tyres, brakes, and interior. You get the full report before you decide to buy.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <span>Do you offer financing / EMI options?</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-answer">
+        Absolutely. We have tie-ups with leading banks and NBFCs offering competitive interest rates starting from 8.5% p.a. Use our EMI Calculator on this page to get an estimate, then our finance team will find you the best deal.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <span>What warranty do I get with my purchase?</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-answer">
+        All certified LuxDrive cars come with a minimum 1-year comprehensive warranty. Selected models come with 2-year coverage. The warranty covers major mechanical components and is honoured at our authorised service partners across Mumbai.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <span>Can I see the car's full service history?</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-answer">
+        Yes, always. We only buy cars with complete and verifiable service history. You'll receive copies of all service records, original invoice, RC book, insurance documents, and any authorised dealer service records before purchase.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <span>Can I exchange / trade-in my current car?</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-answer">
+        Yes! We accept trade-ins of most car brands. Our team will evaluate your car at fair market value and adjust it against the purchase price of your new car. Call us or visit the showroom with your car for a free valuation.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <span>Do you deliver the car to my home?</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-answer">
+        Yes, we offer home delivery across Mumbai and surrounding areas at no extra charge. Your car will be detailed, fuelled, and delivered by one of our trained staff with all documentation in hand.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">
+        <span>How long does the buying process take?</span>
+        <span class="faq-arrow">▼</span>
+      </div>
+      <div class="faq-answer">
+        For cash purchases, delivery can happen within 24–48 hours of selecting your car. For financed purchases, it typically takes 3–5 working days for loan approval and RC transfer formalities.
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ENQUIRY -->
+<section class="enquiry-section" id="enquiry">
+  <div class="section-title">
+    <h2>Get in <span>Touch</span></h2>
+    <p>Have a question? We're happy to help you find your perfect car.</p>
+  </div>
+  <div class="enquiry-wrapper">
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Full Name</label>
+        <input type="text" placeholder="Your name" id="eq-name">
+      </div>
+      <div class="form-field">
+        <label>Email Address</label>
+        <input type="email" placeholder="email@example.com" id="eq-email">
+      </div>
+      <div class="form-field">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="+91 98765 43210" id="eq-phone">
+      </div>
+      <div class="form-field">
+        <label>Interested In</label>
+        <select id="eq-car">
+          <option>Ferrari Roma 2021</option>
+          <option>Porsche 911 Carrera 2020</option>
+          <option>BMW M8 Competition 2022</option>
+          <option>Mercedes-AMG GT 2021</option>
+          <option>Lamborghini Urus 2022</option>
+          <option>Other / General Enquiry</option>
+        </select>
+      </div>
+      <div class="form-field full">
+        <label>Your Message</label>
+        <textarea placeholder="Tell us what you're looking for..." id="eq-msg"></textarea>
+      </div>
+    </div>
+    <button class="btn-submit" onclick="submitEnquiry()">Send Enquiry</button>
+    <div class="success-msg" id="eq-success">✅ Enquiry received! Our team will contact you within 2 hours.</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="footer-logo">LUX<span>DRIVE</span></span>
+      <p>Mumbai's most trusted destination for pre-owned luxury automobiles. Quality, trust, and passion — in every car we sell.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#cars">Browse Cars</a></li>
+        <li><a href="#compare">Compare</a></li>
+        <li><a href="#emi">EMI Calculator</a></li>
+        <li><a href="#testdrive">Test Drive</a></li>
+        <li><a href="#story">Our Story</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact Us</h4>
+      <ul>
+        <li><a href="#">📍 Bandra West, Mumbai</a></li>
+        <li><a href="#">📞 +91 77180 67908</a></li>
+        <li><a href="#">✉️ hello@luxdrive.in</a></li>
+        <li><a href="#">⏰ Mon–Sat, 10am–7pm</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 LuxDrive. All rights reserved.</p>
+    <p>Built for academic purposes 🎓</p>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 id="modal-title">Quick Enquiry</h3>
+    <p id="modal-sub">Interested? Leave your details and we'll call you back.</p>
+    <input type="text" placeholder="Your Name" id="modal-name">
+    <input type="tel" placeholder="Phone Number" id="modal-phone">
+    <button class="btn-primary" onclick="submitModal()">Request Callback</button>
+    <div class="success-msg" id="modal-success">✅ We'll call you shortly!</div>
+  </div>
+</div>
+
+<!-- ── WISHLIST DRAWER ── -->
+<div class="wishlist-drawer" id="wishlist-drawer">
+  <div class="wishlist-drawer-head">
+    <h3>❤️ My Wishlist</h3>
+    <button class="wishlist-close-btn" onclick="toggleWishlist()">✕</button>
+  </div>
+  <div class="wishlist-drawer-body" id="wishlist-body">
+    <div class="wishlist-empty">
+      <div>💔</div>
+      <p>No cars saved yet.<br>Tap the ♡ on any car to save it here.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── WISHLIST FAB ── -->
+<button class="wishlist-fab" onclick="toggleWishlist()" title="My Wishlist">
+  ❤️
+  <div class="wishlist-count" id="wishlist-count">0</div>
+</button>
+
+<script>
+
+  // ─────────────────────────────────────────────
+  // CAR DATA
+  // Each car object holds all the info we need
+  // to render a card: brand, name, year, type,
+  // odometer reading, fuel type, price (both as
+  // a number for filtering and a formatted string
+  // for display), a badge label, and a real photo
+  // from Unsplash via a direct URL.
+  // ─────────────────────────────────────────────
+
+  const cars = [
+    {
+      id: 0,
+      brand: 'Ferrari',
+      name: 'Ferrari Roma',
+      year: 2021,
+      type: 'Coupe',
+      km: '28,000',
+      fuel: 'Petrol',
+      priceVal: 38500000,    // raw number used for budget filter
+      price: '3,85,00,000', // formatted string shown on the card
+      tag: 'Certified',
+      img: 'Roma.jpg' // Ferrari Roma — red coupe, front angle
+    },
+    {
+      id: 1,
+      brand: 'Porsche',
+      name: 'Porsche 911 Carrera',
+      year: 2020,
+      type: 'Coupe',
+      km: '35,000',
+      fuel: 'Petrol',
+      priceVal: 19200000,
+      price: '1,92,00,000',
+      tag: 'Featured',
+      img: 'porsche-911.avif' // Porsche 911 Carrera — silver, front angle
+    },
+    {
+      id: 2,
+      brand: 'BMW',
+      name: 'BMW M8 Competition',
+      year: 2022,
+      type: 'Coupe',
+      km: '22,000',
+      fuel: 'Petrol',
+      priceVal: 21000000,
+      price: '2,10,00,000',
+      tag: 'New Arrival',
+      img: 'm8.jpg' // BMW M8 — dark blue coupe, front
+    },
+    {
+      id: 3,
+      brand: 'Mercedes',
+      name: 'Mercedes-AMG GT',
+      year: 2021,
+      type: 'Coupe',
+      km: '19,500',
+      fuel: 'Petrol',
+      priceVal: 24500000,
+      price: '2,45,00,000',
+      tag: 'Certified',
+      img: 'mercedes-amg-gt.avif' // Mercedes-AMG GT — black series, front
+    },
+    {
+      id: 4,
+      brand: 'Lamborghini',
+      name: 'Lamborghini Urus',
+      year: 2022,
+      type: 'SUV',
+      km: '14,000',
+      fuel: 'Petrol',
+      priceVal: 32000000,
+      price: '3,20,00,000',
+      tag: 'Hot Deal',
+      img: 'Lamborghini_urus.jpg' // Lamborghini Urus — green, user uploaded photo
+    },
+    {
+      id: 5,
+      brand: 'Porsche',
+      name: 'Porsche Cayenne GTS',
+      year: 2021,
+      type: 'SUV',
+      km: '30,000',
+      fuel: 'Petrol',
+      priceVal: 15500000,
+      price: '1,55,00,000',
+      tag: 'Certified',
+      img: 'porsche_cayenne_gts.webp' // Porsche Cayenne GTS — front, dark colour
+    },
+    {
+      id: 6,
+      brand: 'BMW',
+      name: 'BMW X7 M50i',
+      year: 2022,
+      type: 'SUV',
+      km: '18,000',
+      fuel: 'Petrol',
+      priceVal: 13500000,
+      price: '1,35,00,000',
+      tag: 'Featured',
+      img: 'x7.avif' // BMW X7 — grey, front three-quarter
+    },
+    {
+      id: 7,
+      brand: 'Mercedes',
+      name: 'Mercedes S-Class 500',
+      year: 2020,
+      type: 'Sedan',
+      km: '42,000',
+      fuel: 'Petrol',
+      priceVal: 11000000,
+      price: '1,10,00,000',
+      tag: 'Best Value',
+      img: 's_class.avif' // Mercedes S-Class W223 — silver, front
+    },
+  ];
+
+
+  // ─────────────────────────────────────────────
+  // RENDER CARS
+  // Takes an array of car objects and builds the
+  // HTML for each card, then injects everything
+  // into the #cars-grid container at once.
+  // If the list is empty (no filter matches),
+  // we show a friendly "no results" message.
+  // ─────────────────────────────────────────────
+
+  function renderCars(carList) {
+
+    const grid = document.getElementById('cars-grid');
+
+    // If nothing matches the filters, tell the user
+    if (carList.length === 0) {
+      grid.innerHTML = '<p class="no-results">No cars match your filters. Try resetting.</p>';
+      return;
+    }
+
+    // Build one card per car and join them into a single HTML string
+    // Clicking anywhere on the card opens the full detail page for that car
+    grid.innerHTML = carList.map(function(car) {
+      const isLoved = getWishlist().some(function(w) { return w.id === car.id; });
+      return `
+        <div class="car-card-wrap" style="position:relative">
+          <button
+            class="wishlist-btn ${isLoved ? 'loved' : ''}"
+            onclick="event.stopPropagation(); toggleWishlistCar(${car.id})"
+            title="${isLoved ? 'Remove from wishlist' : 'Add to wishlist'}"
+          >${isLoved ? '❤️' : '🤍'}</button>
+          <div class="car-card" onclick="openCar(${car.id})" style="cursor:pointer">
+            <img
+              class="car-img"
+              src="${car.img}"
+              alt="${car.name}"
+              loading="lazy"
+              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+            />
+            <div class="car-img-fallback">🚗 Image unavailable</div>
+            <div class="car-info">
+              <span class="car-badge">${car.tag}</span>
+              <div class="car-name">${car.name}</div>
+              <div class="car-sub">${car.year} · ${car.type}</div>
+              <div class="car-specs">
+                <span>🛣️ ${car.km} km</span>
+                <span>⛽ ${car.fuel}</span>
+              </div>
+              <div class="car-footer">
+                <div class="car-price">
+                  ₹${car.price}
+                  <small>Negotiable</small>
+                </div>
+                <button class="btn-enquire" onclick="event.stopPropagation(); openModal('${car.name}')">Enquire</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+
+  // ─────────────────────────────────────────────
+  // FILTER CARS
+  // Reads the current values from all three filter
+  // dropdowns and narrows down the car list step
+  // by step. Only active filters (non-empty) are
+  // applied, so leaving a dropdown at "All" has
+  // no effect on that particular dimension.
+  // ─────────────────────────────────────────────
+
+  function filterCars() {
+
+    const selectedBrand  = document.getElementById('filter-brand').value;
+    const selectedType   = document.getElementById('filter-type').value;
+    const selectedBudget = document.getElementById('filter-budget').value;
+
+    // Start with the full list, then narrow it down
+    let filteredList = cars;
+
+    // Filter by brand if the user picked one
+    if (selectedBrand) {
+      filteredList = filteredList.filter(function(car) {
+        return car.brand === selectedBrand;
+      });
+    }
+
+    // Filter by body type (Coupe, SUV, Sedan, etc.)
+    if (selectedType) {
+      filteredList = filteredList.filter(function(car) {
+        return car.type === selectedType;
+      });
+    }
+
+    // Filter by budget — the dropdown value is in lakhs (e.g. "200" = ₹2 Cr)
+    // so we multiply by 100,000 to compare against the raw priceVal
+    if (selectedBudget) {
+      const maxPrice = parseInt(selectedBudget) * 100000;
+      filteredList = filteredList.filter(function(car) {
+        return car.priceVal <= maxPrice;
+      });
+    }
+
+    renderCars(filteredList);
+  }
+
+
+  // ─────────────────────────────────────────────
+  // RESET FILTERS
+  // Clears all three dropdowns back to their
+  // default "All" state and re-renders every car.
+  // ─────────────────────────────────────────────
+
+  function resetFilters() {
+
+    const filterIds = ['filter-brand', 'filter-type', 'filter-budget'];
+
+    // Loop through each filter and reset it
+    filterIds.forEach(function(id) {
+      document.getElementById(id).value = '';
+    });
+
+    // Show all cars again
+    renderCars(cars);
+  }
+
+
+  // ─────────────────────────────────────────────
+  // EMI CALCULATOR
+  // Uses the standard reducing-balance EMI formula:
+  //   EMI = P × r × (1+r)^n / ((1+r)^n - 1)
+  // where:
+  //   P = loan amount (price minus down payment)
+  //   r = monthly interest rate (annual rate ÷ 12 ÷ 100)
+  //   n = number of monthly instalments (tenure in months)
+  //
+  // If interest rate is 0, we simply divide the
+  // principal equally across all months.
+  // ─────────────────────────────────────────────
+
+  function calcEMI() {
+
+    // Read all input values (fall back to 0 if empty)
+    const carPrice     = parseFloat(document.getElementById('car-price').value) || 0;
+    const downPayment  = parseFloat(document.getElementById('down-pay').value)  || 0;
+    const annualRate   = parseFloat(document.getElementById('interest').value)  || 0;
+    const tenureMonths = parseInt(document.getElementById('tenure').value);
+
+    // Loan amount = car price minus what the customer pays upfront
+    const loanAmount = Math.max(0, carPrice - downPayment);
+
+    // Convert annual interest rate to a monthly decimal
+    const monthlyRate = annualRate / 12 / 100;
+
+    // Calculate monthly EMI
+    let emi;
+    if (monthlyRate > 0) {
+      // Standard compound interest EMI formula
+      const factor = Math.pow(1 + monthlyRate, tenureMonths);
+      emi = loanAmount * monthlyRate * factor / (factor - 1);
+    } else {
+      // Zero interest: just split principal evenly
+      emi = loanAmount / tenureMonths;
+    }
+
+    const totalPayable    = emi * tenureMonths;
+    const totalInterest   = totalPayable - loanAmount;
+
+    // Helper to format any number as Indian Rupees (₹1,23,456)
+    function formatINR(amount) {
+      return '₹' + Math.round(amount).toLocaleString('en-IN');
+    }
+
+    // Update the result display
+    document.getElementById('emi-amount').textContent = formatINR(emi);
+    document.getElementById('loan-amt').textContent   = formatINR(loanAmount);
+    document.getElementById('total-int').textContent  = formatINR(totalInterest);
+    document.getElementById('total-pay').textContent  = formatINR(totalPayable);
+  }
+
+
+  // ─────────────────────────────────────────────
+  // MODAL — QUICK ENQUIRY
+  // Opens a small popup when the user clicks
+  // "Enquire" on a car card. We pre-fill the
+  // title and subtitle with the car's name so
+  // it feels personal and contextual.
+  // ─────────────────────────────────────────────
+
+  function openModal(carName) {
+
+    // Update modal text to match the selected car
+    document.getElementById('modal-title').textContent = 'Enquire: ' + carName;
+    document.getElementById('modal-sub').textContent   = 'Interested in the ' + carName + '? Leave your details and we\'ll call you back.';
+
+    // Clear any previous inputs and hide any old success message
+    document.getElementById('modal-name').value            = '';
+    document.getElementById('modal-phone').value           = '';
+    document.getElementById('modal-success').style.display = 'none';
+
+    // Show the modal overlay
+    document.getElementById('modal').classList.add('active');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+  }
+
+  function submitModal() {
+
+    const name  = document.getElementById('modal-name').value.trim();
+    const phone = document.getElementById('modal-phone').value.trim();
+
+    // Basic validation — both fields must be filled
+    if (!name || !phone) {
+      alert('Please enter your name and phone number.');
+      return;
+    }
+
+    // ── Save this enquiry to localStorage so admin can see it ──
+    const enquiries = JSON.parse(localStorage.getItem('luxdrive_enquiries') || '[]');
+    enquiries.push({
+      type:      'Quick Enquiry',
+      name:      name,
+      phone:     phone,
+      email:     '—',
+      car:       document.getElementById('modal-title').textContent.replace('Enquire: ', ''),
+      message:   '—',
+      timestamp: new Date().toLocaleString('en-IN')
+    });
+    localStorage.setItem('luxdrive_enquiries', JSON.stringify(enquiries));
+
+    // Show success message, then auto-close after 2 seconds
+    document.getElementById('modal-success').style.display = 'block';
+    setTimeout(closeModal, 2000);
+  }
+
+  // Close the modal if the user clicks on the dark overlay behind it
+  document.getElementById('modal').addEventListener('click', function(event) {
+    if (event.target === event.currentTarget) {
+      closeModal();
+    }
+  });
+
+
+  // ─────────────────────────────────────────────
+  // TEST DRIVE BOOKING
+  // Simple form validation — all three fields
+  // (name, phone, date) are required before we
+  // show the confirmation message.
+  // ─────────────────────────────────────────────
+
+  function bookTestDrive() {
+
+    const name  = document.getElementById('td-name').value.trim();
+    const phone = document.getElementById('td-phone').value.trim();
+    const date  = document.getElementById('td-date').value;
+    const car   = document.getElementById('td-car').value;
+
+    // Make sure nothing is left blank
+    if (!name || !phone || !date) {
+      alert('Please fill in all fields before booking.');
+      return;
+    }
+
+    // ── Save this test drive booking to localStorage ──
+    const bookings = JSON.parse(localStorage.getItem('luxdrive_testdrives') || '[]');
+    bookings.push({
+      name:      name,
+      phone:     phone,
+      car:       car,
+      date:      date,
+      status:    'Pending',
+      timestamp: new Date().toLocaleString('en-IN')
+    });
+    localStorage.setItem('luxdrive_testdrives', JSON.stringify(bookings));
+
+    // Show the success confirmation
+    document.getElementById('td-success').style.display = 'block';
+  }
+
+
+  // ─────────────────────────────────────────────
+  // ENQUIRY FORM
+  // Validates that at least the name and email
+  // are filled in, then shows a thank-you message.
+  // ─────────────────────────────────────────────
+
+  function submitEnquiry() {
+
+    const name    = document.getElementById('eq-name').value.trim();
+    const email   = document.getElementById('eq-email').value.trim();
+    const phone   = document.getElementById('eq-phone').value.trim();
+    const car     = document.getElementById('eq-car').value;
+    const message = document.getElementById('eq-msg').value.trim();
+
+    // Minimum required fields
+    if (!name || !email) {
+      alert('Please enter your name and email address.');
+      return;
+    }
+
+    // ── Save this enquiry to localStorage so admin can see it ──
+    const enquiries = JSON.parse(localStorage.getItem('luxdrive_enquiries') || '[]');
+    enquiries.push({
+      type:      'Contact Form',
+      name:      name,
+      phone:     phone || '—',
+      email:     email,
+      car:       car,
+      message:   message || '—',
+      timestamp: new Date().toLocaleString('en-IN')
+    });
+    localStorage.setItem('luxdrive_enquiries', JSON.stringify(enquiries));
+
+    // Show confirmation
+    document.getElementById('eq-success').style.display = 'block';
+  }
+
+
+  // ─────────────────────────────────────────────
+  // SMOOTH SCROLL HELPER
+  // Used by nav buttons (e.g. "Get in Touch")
+  // to scroll to a section by its ID.
+  // ─────────────────────────────────────────────
+
+  function scrollTo(sectionId) {
+    document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+  }
+
+
+  // ─────────────────────────────────────────────
+  // FAQ ACCORDION
+  // Clicking a question opens/closes its answer.
+  // Only one item can be open at a time — clicking
+  // a new one closes the previous one.
+  // ─────────────────────────────────────────────
+
+  function toggleFaq(questionEl) {
+
+    const clickedItem = questionEl.parentElement;
+    const allItems    = document.querySelectorAll('.faq-item');
+
+    // Close all other open items first
+    allItems.forEach(function(item) {
+      if (item !== clickedItem) {
+        item.classList.remove('open');
+      }
+    });
+
+    // Toggle the clicked item open/closed
+    clickedItem.classList.toggle('open');
+  }
+  // Adds or removes the 'dark-mode' class on
+  // <body>. The CSS variables defined under
+  // body.dark-mode swap every colour on the page
+  // instantly. The user's preference is saved to
+  // localStorage so it persists across page loads.
+  // ─────────────────────────────────────────────
+
+  function toggleTheme() {
+
+    const body = document.body;
+    const btn  = document.getElementById('theme-toggle');
+
+    // Flip the dark-mode class
+    const isDark = body.classList.toggle('dark-mode');
+
+    // Update button label and icon to show the opposite action
+    btn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+
+    // Remember the choice for next visit
+    localStorage.setItem('luxdrive_theme', isDark ? 'dark' : 'light');
+  }
+
+
+  // ─────────────────────────────────────────────
+  // APPLY SAVED THEME ON LOAD
+  // If the user already chose dark mode in a
+  // previous visit, apply it immediately so
+  // there's no flash of light mode on load.
+  // ─────────────────────────────────────────────
+
+  (function applyThemeOnLoad() {
+    const saved = localStorage.getItem('luxdrive_theme');
+    if (saved === 'dark') {
+      document.body.classList.add('dark-mode');
+      document.getElementById('theme-toggle').textContent = '☀️ Light';
+    }
+  })();
+
+
+  // ─────────────────────────────────────────────
+  // OPEN CAR DETAIL
+  // Saves car ID to localStorage then navigates.
+  // localStorage fallback ensures the detail page
+  // can find the car even if the URL query string
+  // is stripped by the browser or environment.
+  // ─────────────────────────────────────────────
+
+  function openCar(carId) {
+    localStorage.setItem('luxdrive_selected_car', carId);
+    window.location.href = 'car-detail.html?id=' + carId;
+  }
+
+
+  // ─────────────────────────────────────────────
+  // WISHLIST
+  // Saves/removes cars from localStorage.
+  // The heart icon on each card toggles state.
+  // The drawer on the right shows all saved cars.
+  // ─────────────────────────────────────────────
+
+  function getWishlist() {
+    return JSON.parse(localStorage.getItem('luxdrive_wishlist') || '[]');
+  }
+
+  function saveWishlist(list) {
+    localStorage.setItem('luxdrive_wishlist', JSON.stringify(list));
+  }
+
+  function toggleWishlistCar(carId) {
+    let wishlist = getWishlist();
+    const car    = cars.find(function(c) { return c.id === carId; });
+    const exists = wishlist.some(function(w) { return w.id === carId; });
+    if (exists) {
+      wishlist = wishlist.filter(function(w) { return w.id !== carId; });
+    } else {
+      wishlist.push({ id: car.id, name: car.name, price: car.price, img: car.img });
+    }
+    saveWishlist(wishlist);
+    updateWishlistCount();
+    renderWishlistDrawer();
+    renderCars(cars);
+  }
+
+  function updateWishlistCount() {
+    const count = getWishlist().length;
+    const badge = document.getElementById('wishlist-count');
+    badge.textContent = count;
+    badge.classList.toggle('show', count > 0);
+  }
+
+  function toggleWishlist() {
+    document.getElementById('wishlist-drawer').classList.toggle('open');
+    renderWishlistDrawer();
+  }
+
+  function renderWishlistDrawer() {
+    const wishlist = getWishlist();
+    const body     = document.getElementById('wishlist-body');
+    if (wishlist.length === 0) {
+      body.innerHTML = `<div class="wishlist-empty"><div>💔</div><p>No cars saved yet.<br>Tap the ♡ on any car to save it here.</p></div>`;
+      return;
+    }
+    body.innerHTML = wishlist.map(function(item) {
+      return `
+        <div class="wishlist-item">
+          <img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'">
+          <div class="wishlist-item-info">
+            <div class="wishlist-item-name">${item.name}</div>
+            <div class="wishlist-item-price">₹${item.price}</div>
+          </div>
+          <button class="wishlist-remove" onclick="toggleWishlistCar(${item.id})" title="Remove">✕</button>
+        </div>`;
+    }).join('');
+  }
+
+
+  // ─────────────────────────────────────────────
+  // INITIALISATION
+  // Runs once when the page loads:
+  //  1. Render all car cards
+  //  2. Calculate and display the default EMI
+  //  3. Set today as the minimum selectable date
+  //  4. Load wishlist count from previous session
+  // ─────────────────────────────────────────────
+
+  renderCars(cars);
+  calcEMI();
+  document.getElementById('td-date').min = new Date().toISOString().split('T')[0];
+  updateWishlistCount();
+
+</script>
+</body>
+</html>
